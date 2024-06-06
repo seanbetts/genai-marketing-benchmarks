@@ -24,6 +24,10 @@ To create a comprehensive bank of questions and tests that can be used to benchm
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
+## Questions
+(/Images/Questions_June_2024.png)
+The database of marketing questions currently contains 1,500+ multiple choice questions to test the marketing knowledge of generative AI models.
+
 ## Models
 The code currently allows the testing of the following GenAI models:
 - Anthropic (Claude-3 Haiku 07-03-24, Claude-3 Sonnet 29-02-24, Claude-3 Opus 29-02-24)
