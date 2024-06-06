@@ -24,31 +24,6 @@ To create a comprehensive bank of questions and tests that can be used to benchm
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
-## Benchmarking Phases
-
-### Phase 1: Assessing Marketing Knowledge
-- **Objective**: Evaluate how much GenAI models know about marketing.
-- **Tools**: Multiple choice questions.
-- **Usage**: Fine-tuning for different use cases.
-
-### Phase 2: Assessing Marketing Understanding
-- **Objective**: Determine how well GenAI models understand and apply marketing principles.
-- **Tools**: Open-ended questions.
-- **Usage**: Fine-tuning for different use cases.
-
-### Phase 3: Assessing Marketing Tasks
-- **Objective**: Test the ability of GenAI models to perform various marketing tasks.
-- **Tools**: Specific tasks with objective, subjective, and quality scoring.
-- **Usage**: Fine-tuning for different use cases.
-
-## Contributors
-
-- OMG
-- LinkedIn
-- Google
-- Facebook
-- Amazon?
-
 ## Sources
 
 - [The Economic Potential of Generative AI](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-AI-the-next-productivity-frontier#/)
