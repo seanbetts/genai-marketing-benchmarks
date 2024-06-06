@@ -24,6 +24,15 @@ To create a comprehensive bank of questions and tests that can be used to benchm
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
+## Models
+The code currently allows the testing of the following GenAI models:
+- Anthropic (Claude-3 Haiku 07-03-24, Claude-3 Sonnet 29-02-24, Claude-3 Opus 29-02-24)
+- OpenAI (GPT-3.5 Turbo 25-01-24, GPT-4 13-06-24, GPT-4 Turbo 09-04-24, GPT-4o 13-05-24)
+- Google (Gemini-1.0 Pro, Gemini-1.5 Flash, Gemini-1.5 Pro)
+- Meta (Llama-2-7B, Llama-2-13B, Llama-2-70B, Llama-3-8B, Llama-3-70B)
+- Mistral (Mistral-7B, Mixtral-8x7B, Mixtral-8x22B)
+- Microsoft (Phi-3 Mini, Phi-3 Small, Phi-3 Medium)
+
 ## Sources
 
 - [The Economic Potential of Generative AI](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-AI-the-next-productivity-frontier#/)
