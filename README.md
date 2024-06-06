@@ -10,7 +10,7 @@ The marketing industry lacks standardized benchmarks to evaluate GenAI models sp
 
 ### Key Issues:
 - Existing benchmarks primarily test general knowledge, not marketing-specific knowledge, understanding or reasoning.
-- Limited number of marketing-related questions in current benchmarks (e.g., MMMU has only 216 marketing questions and 12 advertising images).
+- Limited number of marketing-related questions in current benchmarks (e.g., the [MMMU Benchmark](https://mmmu-benchmark.github.io) has only 216 marketing questions and 12 advertising images).
 - Clients, platforms, and agencies need reliable benchmarks to select, develop, and fine-tune GenAI tools.
 
 ## Project Objective
@@ -37,8 +37,3 @@ The code currently allows the testing of the following GenAI models:
 - Meta (Llama-2-7B, Llama-2-13B, Llama-2-70B, Llama-3-8B, Llama-3-70B)
 - Mistral (Mistral-7B, Mixtral-8x7B, Mixtral-8x22B)
 - Microsoft (Phi-3 Mini, Phi-3 Small, Phi-3 Medium)
-
-## Sources
-
-- [The Economic Potential of Generative AI](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-AI-the-next-productivity-frontier#/)
-- [MMMU Benchmark](https://mmmu-benchmark.github.io)
