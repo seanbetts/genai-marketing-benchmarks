@@ -9,6 +9,7 @@ import anthropic
 import google.generativeai as gemini
 import curses
 import platform
+import requests
 
 # Clear console
 if platform.system() == "Windows":
@@ -45,6 +46,11 @@ claude_client = anthropic.Anthropic(api_key=os.getenv('CLAUDE_API_KEY'))
 # Set up your Gemini API key
 gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
+# Set up HuggingFace API key
+hf_api_key = api_key=os.getenv('HUGGINGFACE_API_KEY')
+hf_headers = {f"Authorization": "Bearer {hf_api_key}"}
+HF_API_URL = "https://api-inference.huggingface.co/models/"
+
 # Define LLMs
 llms = [
     {"name": "GPT-3.5 Turbo 25-01-24", "variant": "gpt-3.5-turbo-0125", "provider": "OpenAI", "prompt": 0.50 / 1000000, "completion": 1.50 / 1000000},
@@ -56,7 +62,18 @@ llms = [
     {"name": "Claude-3 Opus 29-02-24", "variant": "claude-3-opus-20240229", "provider": "Anthropic", "prompt": 15 / 1000000, "completion": 75 / 1000000},
     {"name": "Gemini-1.0 Pro", "variant": "gemini-1.0-pro", "provider": "Google", "prompt": 0.5 / 1000000, "completion": 1.5 / 1000000},
     {"name": "Gemini-1.5 Flash", "variant": "gemini-1.5-flash", "provider": "Google", "prompt": 0.35 / 1000000, "completion": 1.05 / 1000000},
-    {"name": "Gemini-1.5 Pro", "variant": "gemini-1.5-pro", "provider": "Google", "prompt": 1.75 / 1000000, "completion": 10.5 / 1000000}
+    {"name": "Gemini-1.5 Pro", "variant": "gemini-1.5-pro", "provider": "Google", "prompt": 1.75 / 1000000, "completion": 10.5 / 1000000},
+    {"name": "Llama-2-7B", "variant": "meta-llama/Llama-2-7B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
+    {"name": "Llama-2-13B", "variant": "meta-llama/Llama-2-13B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
+    {"name": "Llama-2-70B", "variant": "meta-llama/Llama-2-70B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
+    {"name": "Llama-3-8B", "variant": "meta-llama/Meta-Llama-3-8B-Instruct", "provider": "Meta", "prompt": 0, "completion": 0},
+    {"name": "Llama-3-70B", "variant": "meta-llama/Meta-Llama-3-70B-Instruct", "provider": "Meta", "prompt": 0, "completion": 0},
+    {"name": "Mistral-7B", "variant": "mistralai/Mistral-7B-Instruct-v0.3", "provider": "Mistral", "prompt": 0, "completion": 0},
+    {"name": "Mixtral-8x7B", "variant": "mistralai/Mixtral-8x7B-Instruct-v0.1", "provider": "Mistral", "prompt": 0, "completion": 0},
+    {"name": "Mixtral-8x22B", "variant": "mistralai/Mixtral-8x22B-Instruct-v0.1", "provider": "Mistral", "prompt": 0, "completion": 0},
+    {"name": "Phi-3 Mini", "variant": "microsoft/Phi-3-mini-4k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0},
+    {"name": "Phi-3 Small", "variant": "microsoft/Phi-3-small-8k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0},
+    {"name": "Phi-3 Medium", "variant": "microsoft/Phi-3-medium-4k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0}
 ]
 
 def curses_menu(stdscr):
@@ -258,6 +275,18 @@ def ask_llm(provider, model, question, choices, retry_count):
         model_instance = gemini.GenerativeModel(model)
         response = model_instance.generate_content(prompt)
         answer = response.text
+        answer, valid = answer_check(question, answer)
+        if not valid:
+            return ask_llm(provider, model, question, choices, retry_count - 1)
+        prompt_tokens = model_instance.count_tokens(prompt).total_tokens
+        completion_tokens = model_instance.count_tokens(answer).total_tokens
+        return answer, prompt_tokens, completion_tokens
+    
+    if provider == 'Meta':
+        META_API_URL = HF_API_URL + model
+        payload = {"inputs": f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices: {choices}\nAnswer:", "parameters": {"wait_for_model": "true"},}
+        response = requests.post(META_API_URL, headers=hf_headers, json=payload)
+        answer = response[0]['generated_text'].split("Answer: ")[-1]
         answer, valid = answer_check(question, answer)
         if not valid:
             return ask_llm(provider, model, question, choices, retry_count - 1)
