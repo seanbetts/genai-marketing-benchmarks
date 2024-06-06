@@ -9,13 +9,13 @@ Generative AI (GenAI) has the potential to transform the marketing industry, yet
 The marketing industry lacks standardized benchmarks to evaluate GenAI models specifically for marketing capabilities. While there are existing benchmarks for general AI capabilities, these do not adequately cover the breadth and depth required for marketing.
 
 ### Key Issues:
-- Existing benchmarks primarily test general knowledge, not marketing-specific understanding or reasoning.
+- Existing benchmarks primarily test general knowledge, not marketing-specific knowledge, understanding or reasoning.
 - Limited number of marketing-related questions in current benchmarks (e.g., MMMU has only 216 marketing questions and 12 advertising images).
 - Clients, platforms, and agencies need reliable benchmarks to select, develop, and fine-tune GenAI tools.
 
 ## Project Objective
 
-To create a comprehensive bank of questions and tests that can be used to benchmark GenAI models across various aspects of marketing.
+To create a comprehensive bank of questions and tests that can be used to benchmark GenAI models knowledge, understanding and ability to complte tasks across various aspects of marketing.
 
 ### Benefits:
 - Provides a valuable resource for the marketing industry.
