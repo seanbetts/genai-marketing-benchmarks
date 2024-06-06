@@ -24,10 +24,10 @@ To create a comprehensive bank of questions and tests that can be used to benchm
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
-## Questions
+##  GenAI Marketing Benchmark Questions
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
-The database of marketing questions currently contains 1,500+ multiple choice questions to test the marketing knowledge of generative AI models.
+The database of marketing questions currently contains 1,500+ multiple choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ## Models
 The code currently allows the testing of the following GenAI models:
