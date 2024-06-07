@@ -41,11 +41,11 @@ The code currently allows the testing of the following GenAI models:
 ## Methodology
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
-Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.
-Question: Which channel is considered most effective for long-term brand building?
-Choices: 
-A. Radio
-B. TV
-C. Online ads
-D. Print
+Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.<br>
+Question: Which channel is considered most effective for long-term brand building?<br>
+Choices:<br>
+A. Radio<br>
+B. TV<br>
+C. Online ads<br>
+D. Print<br>
 Answer:
