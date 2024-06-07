@@ -37,3 +37,15 @@ The code currently allows the testing of the following GenAI models:
 - Meta (Llama-2-7B, Llama-2-13B, Llama-2-70B, Llama-3-8B, Llama-3-70B)
 - Mistral (Mistral-7B, Mixtral-8x7B, Mixtral-8x22B)
 - Microsoft (Phi-3 Mini, Phi-3 Small, Phi-3 Medium)
+
+## Methodology
+The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
+
+Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.
+Question: Which channel is considered most effective for long-term brand building?
+Choices: 
+A. Radio
+B. TV
+C. Online ads
+D. Print
+Answer:

@@ -48,18 +48,18 @@ gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 # Set up HuggingFace API key
 hf_api_key = api_key=os.getenv('HUGGINGFACE_API_KEY')
-hf_headers = {f"Authorization": "Bearer {hf_api_key}"}
+hf_headers = {"Authorization": f"Bearer {hf_api_key}"}
 HF_API_URL = "https://api-inference.huggingface.co/models/"
 
 # Define LLMs
 llms = [
-    {"name": "GPT-3.5 Turbo 25-01-24", "variant": "gpt-3.5-turbo-0125", "provider": "OpenAI", "prompt": 0.50 / 1000000, "completion": 1.50 / 1000000},
-    {"name": "GPT-4 13-06-24", "variant": "gpt-4-0613", "provider": "OpenAI", "prompt": 30 / 1000000, "completion": 60 / 1000000},
-    {"name": "GPT-4 Turbo 09-04-24", "variant": "gpt-4-turbo-2024-04-09", "provider": "OpenAI", "prompt": 10 / 1000000, "completion": 30 / 1000000},
-    {"name": "GPT-4o 13-05-24", "variant": "gpt-4o-2024-05-13", "provider": "OpenAI", "prompt": 5 / 1000000, "completion": 15 / 1000000},
-    {"name": "Claude-3 Haiku 07-03-24", "variant": "claude-3-haiku-20240307", "provider": "Anthropic", "prompt": 0.25 / 1000000, "completion": 1.25 / 1000000},
-    {"name": "Claude-3 Sonnet 29-02-24", "variant": "claude-3-sonnet-20240229", "provider": "Anthropic", "prompt": 3 / 1000000, "completion": 15 / 1000000},
-    {"name": "Claude-3 Opus 29-02-24", "variant": "claude-3-opus-20240229", "provider": "Anthropic", "prompt": 15 / 1000000, "completion": 75 / 1000000},
+    {"name": "GPT-3.5 Turbo", "variant": "gpt-3.5-turbo-0125", "provider": "OpenAI", "prompt": 0.50 / 1000000, "completion": 1.50 / 1000000},
+    {"name": "GPT-4", "variant": "gpt-4-0613", "provider": "OpenAI", "prompt": 30 / 1000000, "completion": 60 / 1000000},
+    {"name": "GPT-4 Turbo", "variant": "gpt-4-turbo-2024-04-09", "provider": "OpenAI", "prompt": 10 / 1000000, "completion": 30 / 1000000},
+    {"name": "GPT-4o", "variant": "gpt-4o-2024-05-13", "provider": "OpenAI", "prompt": 5 / 1000000, "completion": 15 / 1000000},
+    {"name": "Claude-3 Haiku", "variant": "claude-3-haiku-20240307", "provider": "Anthropic", "prompt": 0.25 / 1000000, "completion": 1.25 / 1000000},
+    {"name": "Claude-3 Sonnet", "variant": "claude-3-sonnet-20240229", "provider": "Anthropic", "prompt": 3 / 1000000, "completion": 15 / 1000000},
+    {"name": "Claude-3 Opus", "variant": "claude-3-opus-20240229", "provider": "Anthropic", "prompt": 15 / 1000000, "completion": 75 / 1000000},
     {"name": "Gemini-1.0 Pro", "variant": "gemini-1.0-pro", "provider": "Google", "prompt": 0.5 / 1000000, "completion": 1.5 / 1000000},
     {"name": "Gemini-1.5 Flash", "variant": "gemini-1.5-flash", "provider": "Google", "prompt": 0.35 / 1000000, "completion": 1.05 / 1000000},
     {"name": "Gemini-1.5 Pro", "variant": "gemini-1.5-pro", "provider": "Google", "prompt": 1.75 / 1000000, "completion": 10.5 / 1000000},
@@ -122,7 +122,7 @@ def curses_menu(stdscr):
 selected_models = curses.wrapper(curses_menu)
 
 # Create log file
-log_file = os.path.join(today_logs_folder, f"{'_'.join([model['variant'] for model in selected_models])}_{current_time}.log")
+log_file = os.path.join(today_logs_folder, f"{'_'.join([model['variant'].replace('/', '_') for model in selected_models])}_{current_time}.log")
 
 # Create and configure logger
 logger = logging.getLogger(__name__)
@@ -236,7 +236,7 @@ logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions
 
 # Define a function to call LLM API
 def ask_llm(provider, model, question, choices, retry_count):
-    prompt = f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices: {choices}\nAnswer:"
+    prompt = f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices:\n{choices}\nAnswer:"
     if retry_count == 0:
         logger.warning("Maximum retries reached, returning None.")
         return None, 0, 0
@@ -284,14 +284,17 @@ def ask_llm(provider, model, question, choices, retry_count):
     
     if provider == 'Meta':
         META_API_URL = HF_API_URL + model
-        payload = {"inputs": f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices: {choices}\nAnswer:", "parameters": {"wait_for_model": "true"},}
-        response = requests.post(META_API_URL, headers=hf_headers, json=payload)
+        payload = {"inputs": prompt, "parameters": {"wait_for_model": "true"},}
+        def query(payload):
+            response = requests.post(META_API_URL, headers=hf_headers, json=payload)
+            return response.json()
+        response = query(payload)
         answer = response[0]['generated_text'].split("Answer: ")[-1]
         answer, valid = answer_check(question, answer)
         if not valid:
             return ask_llm(provider, model, question, choices, retry_count - 1)
-        prompt_tokens = model_instance.count_tokens(prompt).total_tokens
-        completion_tokens = model_instance.count_tokens(answer).total_tokens
+        prompt_tokens = 0
+        completion_tokens = 0
         return answer, prompt_tokens, completion_tokens
 
     else:
