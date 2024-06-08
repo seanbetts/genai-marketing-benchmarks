@@ -1,4 +1,4 @@
-# Creating GenAI Marketing Benchmarks
+# Creating GenAI Marketing Benchmarks (Beta)
 
 ## Introduction
 
