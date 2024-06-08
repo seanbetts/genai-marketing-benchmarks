@@ -24,22 +24,33 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
-##  GenAI Marketing Benchmark - Knowledge Questions
+##  PHASE ONE - Knowledge Questions
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
-**PROJECT PHASE ONE: IN PROGRESS**<br>
+### IN PROGRESS
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs' responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
 The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
-## GenAI Marketing Benchmark - Understanding Questions
+### Preliminary Results
+These results are from an initial test run of the benchmarks performed on 8th June 2024:<br>
 
-**PROJECT PHASE TWO: NOT STARTED**<br>
+| Model           | AV     | Ad_Ops | Affiliates | Audio | Cinema | Comms_Planning | Marketing_Effectiveness | Outdoor | Paid_Search | Paid_Social | Privacy_Ethics | Programmatic | Publishing | SEO   | Web_Analytics | eCommerce |
+|-----------------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|----------------|--------------|------------|-------|---------------|-----------|
+| GPT-3.5 Turbo   | 56.7%  | 84.0%  | 89.7%      | 40.0% | 52.6%  | 78.5%          | 68.7%                   | 50.0%   | 73.1%       | 68.1%       | 80.0%          | 63.7%        | 60.0%      | 81.2% | 70.0%         | 95.5%     |
+| GPT-4 Turbo     | 70.0%  | 94.0%  | 93.1%      | 40.0% | 68.4%  | 81.3%          | 75.8%                   | 65.0%   | 82.2%       | 72.9%       | 86.0%          | 71.7%        | 60.0%      | 88.3% | 75.0%         | 98.5%     |
+| GPT-4           | 63.3%  | 88.0%  | 96.6%      | 45.0% | 73.7%  | 84.1%          | 83.8%                   | 75.0%   | 82.4%       | 72.5%       | 84.0%          | 72.5%        | 64.0%      | 86.0% | 83.3%         | 100.0%    |
+| Claude-3 Haiku  | 76.7%  | 78.0%  | 86.2%      | 40.0% | 57.9%  | 81.3%          | 81.8%                   | 70.0%   | 72.8%       | 73.1%       | 80.0%          | 68.1%        | 56.0%      | 81.0% | 68.3%         | 98.5%     |
+| Claude-3 Sonnet | 66.7%  | 76.0%  | 75.9%      | 45.0% | 42.1%  | 80.4%          | 74.8%                   | 65.0%   | 77.1%       | 73.6%       | 84.0%          | 68.1%        | 48.0%      | 81.0% | 75.0%         | 98.5%     |
+
+## PHASE TWO - Understanding Questions
+
+### NOT STARTED
 Collect and create a bank of open-ended questions across the breadth and depth of marketing that can be used to test the **understanding** LLMs have of important marketing concepts. The LLMs' responses to these open-ended questions will be graded by another LLM, with access to acredited source material that can be used as reference, on the marketing concepts tested in each open-ended question.
 
-## GenAI Marketing Benchmark - Capabilities Questions
+## PHASE THREE - Capabilities Questions
 
-**PROJECT PHASE THREE: NOT STARTED**<br>
+### NOT STARTED
 Collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
 ## Models
