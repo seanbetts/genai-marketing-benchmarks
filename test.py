@@ -237,7 +237,7 @@ logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions
 # Define a function to call LLM API
 def ask_llm(provider, model, question, choices, retry_count):
     def make_prompt(question, choices):
-        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices:\n{choices}\nAnswer:"
+        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
 
     def handle_response(response, provider):
         if provider == 'OpenAI':
