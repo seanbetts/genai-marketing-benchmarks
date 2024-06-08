@@ -45,7 +45,7 @@ The project is currently missing multiple-choice quesitons from the following ma
 - Customer Experience (CX)
 - Data-Driven Marketing
 
-If there are other marketing disciplines that you think should be represented in the GenAI Marketing Benchmark database please raise an (issue)[https://github.com/seanbetts/genai-marketing-benchmarks/issues] to let me know.
+If there are other marketing disciplines that you think should be represented in the GenAI Marketing Benchmark database please raise an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) to let me know.
 
 ### Preliminary Results
 These results are from an initial test run of the benchmarks performed on **8th June 2024**:<br>
