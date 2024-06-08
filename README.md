@@ -10,7 +10,7 @@ The marketing industry lacks standardized benchmarks to evaluate GenAI models sp
 
 ### Key Issues:
 - Existing benchmarks primarily test general knowledge, not marketing-specific knowledge, understanding or reasoning.
-- Limited number of marketing-related questions in current benchmarks (e.g., the [MMMU Benchmark](https://mmmu-benchmark.github.io) has only 216 marketing questions and 12 advertising images).
+- Limited number of marketing-related questions in current benchmarks (e.g., the [MMMU Benchmark](https://mmmu-benchmark.github.io) has only **216** marketing questions and **12** advertising images).
 - Clients, platforms, and agencies need reliable benchmarks to select, develop, and fine-tune GenAI tools.
 
 ## Project Objective
@@ -27,17 +27,20 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 ##  GenAI Marketing Benchmark - Knowledge Questions
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
-**PROJECT PHASE ONE: IN PROGRESS** - collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs' responses to these multiple-choice questions will be scored on whether they get the right answer or not.
+**PROJECT PHASE ONE: IN PROGRESS**
+Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs' responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
-The database of marketing questions currently contains 1,500+ multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+The database of marketing questions currently contains **1,500+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ## GenAI Marketing Benchmark - Understanding Questions
 
-**PROJECT PHASE TWO: NOT STARTED** - collect and create a bank of open-ended questions across the breadth and depth of marketing that can be used to test the **understanding** LLMs have of important marketing concepts. The LLMs' responses to these open-ended questions will be graded by another LLM, with access to acredited source material that can be used as reference, on the marketing concepts tested in each open-ended question.
+**PROJECT PHASE TWO: NOT STARTED**
+Collect and create a bank of open-ended questions across the breadth and depth of marketing that can be used to test the **understanding** LLMs have of important marketing concepts. The LLMs' responses to these open-ended questions will be graded by another LLM, with access to acredited source material that can be used as reference, on the marketing concepts tested in each open-ended question.
 
 ## GenAI Marketing Benchmark - Capabilities Questions
 
-**PROJECT PHASE THREE: NOT STARTED** - collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
+**PROJECT PHASE THREE: NOT STARTED**
+Collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
 ## Models
 The code currently allows the testing of the following GenAI models:

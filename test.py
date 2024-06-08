@@ -236,70 +236,65 @@ logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions
 
 # Define a function to call LLM API
 def ask_llm(provider, model, question, choices, retry_count):
-    prompt = f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices:\n{choices}\nAnswer:"
+    def make_prompt(question, choices):
+        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\nQuestion: {question}\nChoices:\n{choices}\nAnswer:"
+
+    def handle_response(response, provider):
+        if provider == 'OpenAI':
+            return response.choices[0].message.content.strip()
+        elif provider == 'Anthropic':
+            return response.content[0].text
+        elif provider == 'Google':
+            return response.text
+        elif provider == 'Meta':
+            return response[0]['generated_text'].split("Answer: ")[-1]
+
+    def handle_tokens(response, provider, prompt=None, answer=None, model_instance=None):
+        if provider == 'OpenAI':
+            return response.usage.prompt_tokens, response.usage.completion_tokens
+        elif provider == 'Anthropic':
+            return response.usage.input_tokens, response.usage.output_tokens
+        elif provider == 'Google':
+            return model_instance.count_tokens(prompt).total_tokens, model_instance.count_tokens(answer).total_tokens
+        else:
+            return 0, 0
+
+    def make_api_call(provider, model, prompt):
+        try:
+            if provider == 'OpenAI':
+                return GPT_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
+            elif provider == 'Anthropic':
+                return claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}]), None
+            elif provider == 'Google':
+                model_instance = gemini.GenerativeModel(model)
+                return model_instance.generate_content(prompt), model_instance
+            elif provider == 'Meta':
+                META_API_URL = HF_API_URL + model
+                payload = {"inputs": prompt, "parameters": {"wait_for_model": "true"}}
+                response = requests.post(META_API_URL, headers=hf_headers, json=payload)
+                return response.json(), None
+        except Exception as e:
+            logger.error(f"Error during API call: {e}")
+            return None, None
+
     if retry_count == 0:
         logger.warning("Maximum retries reached, returning None.")
         return None, 0, 0
-    if provider == 'OpenAI':
-        response = GPT_client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
-        )
-        answer = response.choices[0].message.content.strip()
-        answer, valid = answer_check(question, answer)
-        if not valid:
-            return ask_llm(provider, model, question, choices, retry_count - 1)
-        prompt_tokens = response.usage.prompt_tokens
-        completion_tokens = response.usage.completion_tokens
-        return answer, prompt_tokens, completion_tokens
 
-    if provider == 'Anthropic':
-        response = claude_client.messages.create(
-            model=model,
-            max_tokens=1024,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
-        )
-        answer = response.content[0].text
-        answer, valid = answer_check(question, answer)
-        if not valid:
-            return ask_llm(provider, model, question, choices, retry_count - 1)
-        prompt_tokens = response.usage.input_tokens
-        completion_tokens = response.usage.output_tokens
-        return answer, prompt_tokens, completion_tokens
+    prompt = make_prompt(question, choices)
+    response, model_instance = make_api_call(provider, model, prompt)
 
-    if provider == 'Google':
-        model_instance = gemini.GenerativeModel(model)
-        response = model_instance.generate_content(prompt)
-        answer = response.text
-        answer, valid = answer_check(question, answer)
-        if not valid:
-            return ask_llm(provider, model, question, choices, retry_count - 1)
-        prompt_tokens = model_instance.count_tokens(prompt).total_tokens
-        completion_tokens = model_instance.count_tokens(answer).total_tokens
-        return answer, prompt_tokens, completion_tokens
-    
-    if provider == 'Meta':
-        META_API_URL = HF_API_URL + model
-        payload = {"inputs": prompt, "parameters": {"wait_for_model": "true"},}
-        def query(payload):
-            response = requests.post(META_API_URL, headers=hf_headers, json=payload)
-            return response.json()
-        response = query(payload)
-        answer = response[0]['generated_text'].split("Answer: ")[-1]
-        answer, valid = answer_check(question, answer)
-        if not valid:
-            return ask_llm(provider, model, question, choices, retry_count - 1)
-        prompt_tokens = 0
-        completion_tokens = 0
-        return answer, prompt_tokens, completion_tokens
+    if not response:
+        return ask_llm(provider, model, question, choices, retry_count - 1)
 
-    else:
-        logger.warning(f"Provider {provider} no supported.")
-        return None, 0, 0
+    answer = handle_response(response, provider)
+    answer, valid = answer_check(question, answer)
+
+    if not valid:
+        return ask_llm(provider, model, question, choices, retry_count - 1)
+
+    prompt_tokens, completion_tokens = handle_tokens(response, provider, prompt, answer, model_instance)
+    return answer, prompt_tokens, completion_tokens
 
 # Define a function to check the answers
 def answer_check(question, answer):
@@ -419,7 +414,8 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     cursor = conn.cursor()
 
     # Generate a unique table name based on the model and current date
-    table_name = f"{today_date}_{model}".replace('-', '_').replace(':', '_').replace(' ', '_').replace('.', '_')
+    model_cleaned = model.split('/')[-1]
+    table_name = f"{today_date}_{model_cleaned}".replace('-', '_').replace(':', '_').replace(' ', '_').replace('.', '_')
 
     # Save the DataFrame to the SQLite table
     iteration_results_df.to_sql(table_name, conn, if_exists='append', index=False)
