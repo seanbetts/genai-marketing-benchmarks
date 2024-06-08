@@ -12,6 +12,16 @@ import platform
 import requests
 import re
 
+# Custom Exceptions
+class APIError(Exception):
+    pass
+
+class InvalidResponseError(Exception):
+    pass
+
+class RateLimitError(Exception):
+    pass
+
 # Clear console
 if platform.system() == "Windows":
     os.system('cls')
@@ -246,7 +256,7 @@ if confirm != 'y':
 logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions} questions each across selected models: ${estimated_cost:.3f}")
 
 # Define a function to call LLM API
-def ask_llm(provider, model, question, choices, retry_count):
+def ask_llm(provider, model, question, choices):
     def make_prompt(question, choices):
         return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
 
@@ -258,7 +268,16 @@ def ask_llm(provider, model, question, choices, retry_count):
         elif provider == 'Google':
             return response.text
         elif provider == 'Meta':
-            return response[0]['generated_text'].split("Answer: ")[-1]
+            try:
+                if 'error' in response:
+                    if 'Rate limit reached' in response['error']:
+                        raise RateLimitError(response['error'])
+                    else:
+                        raise APIError(response['error'])
+                return response[0]['generated_text'].split("Answer: ")[-1]
+            except (IndexError, KeyError) as e:
+                logger.error(f"Invalid response structure from Meta API: {response}. Error: {e}")
+                raise InvalidResponseError(f"Invalid response structure: {response}")
 
     def handle_tokens(response, provider, prompt=None, answer=None, model_instance=None):
         if provider == 'OpenAI':
@@ -283,26 +302,24 @@ def ask_llm(provider, model, question, choices, retry_count):
                 META_API_URL = HF_API_URL + model
                 payload = {"inputs": prompt, "parameters": {"wait_for_model": "true"}}
                 response = requests.post(META_API_URL, headers=hf_headers, json=payload)
+                if response.status_code == 429:
+                    raise RateLimitError("Rate limit reached")
+                elif response.status_code != 200:
+                    raise APIError(f"API call failed with status code {response.status_code}")
                 return response.json(), None
         except Exception as e:
             logger.error(f"Error during API call: {e}")
-            return None, None
-
-    if retry_count == 0:
-        logger.warning("Maximum retries reached, returning None.")
-        return None, 0, 0
+            raise APIError(f"API call error: {e}")
 
     prompt = make_prompt(question, choices)
     response, model_instance = make_api_call(provider, model, prompt)
 
-    if not response:
-        return ask_llm(provider, model, question, choices, retry_count - 1)
-
     answer = handle_response(response, provider)
+
     answer, valid = answer_check(question, answer)
 
     if not valid:
-        return ask_llm(provider, model, question, choices, retry_count - 1)
+        raise InvalidResponseError(f"Answer validation failed for: {answer}")
 
     prompt_tokens, completion_tokens = handle_tokens(response, provider, prompt, answer, model_instance)
     return answer, prompt_tokens, completion_tokens
@@ -327,6 +344,7 @@ def calculate_token_cost(prompt_tokens, completion_tokens, model):
 def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selected_models):
     def get_column_value(row, primary_col, fallback_col):
         return row.get(primary_col, row.get(fallback_col, None))
+
     all_results = []
     try:
         for model_info in selected_models:
@@ -338,38 +356,47 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                 provider = model_info["provider"]
                 logger.info(f"Starting Round {iteration + 1} for {model_name}")
                 for index, row in df.head(num_questions).iterrows():
-                    discipline = row['Discipline']
-                    category = row['Category']
-                    sub_category = get_column_value(row, 'Sub-Category', 'Sub_Category')
-                    question = row['Question']
-                    difficulty = row['Difficulty']
-                    option_a = get_column_value(row, 'Option A', 'Option_A')
-                    option_b = get_column_value(row, 'Option B', 'Option_B')
-                    option_c = get_column_value(row, 'Option C', 'Option_C')
-                    option_d = get_column_value(row, 'Option D', 'Option_D')
-                    choices = f"""A. {option_a}\nB. {option_b}\nC. {option_c}\nD. {option_d}"""
-                    correct_answer = get_column_value(row, 'Correct Option', 'Correct_Option')
-                    logger.info(f"Round {iteration + 1}: Asked question #{index + 1}: {question}")
-                    llm_answer, prompt_tokens, completion_tokens = ask_llm(provider, model_variant, question, choices, retry_count)
-                    is_correct = llm_answer == correct_answer
-                    logger.info(f"Round {iteration + 1}: {model_name} Answer #{index + 1}: {llm_answer}, {is_correct}")
-                    cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
-                    timestamp = datetime.now()
-                    results.append({
-                        'Round': iteration + 1,
-                        'Discipline': discipline,
-                        'Category': category,
-                        'Sub_Category': sub_category,
-                        'Question': question,
-                        'Difficulty': difficulty,
-                        'Correct_Answer': correct_answer,
-                        'Provider': provider,
-                        'Model': model_name,
-                        'Answer': llm_answer,
-                        'Correct': is_correct,
-                        'Cost': cost,
-                        'Timestamp': timestamp
-                    })
+                    try:
+                        discipline = row['Discipline']
+                        category = row['Category']
+                        sub_category = get_column_value(row, 'Sub-Category', 'Sub_Category')
+                        question = row['Question']
+                        difficulty = row['Difficulty']
+                        option_a = get_column_value(row, 'Option A', 'Option_A')
+                        option_b = get_column_value(row, 'Option B', 'Option_B')
+                        option_c = get_column_value(row, 'Option C', 'Option_C')
+                        option_d = get_column_value(row, 'Option D', 'Option_D')
+                        choices = f"""A. {option_a}\nB. {option_b}\nC. {option_c}\nD. {option_d}"""
+                        correct_answer = get_column_value(row, 'Correct Option', 'Correct_Option')
+                        logger.info(f"Round {iteration + 1}: Asked question #{index + 1}: {question}")
+                        llm_answer, prompt_tokens, completion_tokens = ask_llm(provider, model_variant, question, choices)
+                        if llm_answer is None:
+                            raise ValueError("Failed to get a valid answer from the LLM")
+                        is_correct = llm_answer == correct_answer
+                        logger.info(f"Round {iteration + 1}: {model_name} Answer #{index + 1}: {llm_answer}, {is_correct}")
+                        cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
+                        timestamp = datetime.now()
+                        results.append({
+                            'Round': iteration + 1,
+                            'Discipline': discipline,
+                            'Category': category,
+                            'Sub_Category': sub_category,
+                            'Question': question,
+                            'Difficulty': difficulty,
+                            'Correct_Answer': correct_answer,
+                            'Provider': provider,
+                            'Model': model_name,
+                            'Answer': llm_answer,
+                            'Correct': is_correct,
+                            'Cost': cost,
+                            'Timestamp': timestamp
+                        })
+                    except RateLimitError as e:
+                        logger.error(f"Rate limit error: {e}")
+                        return pd.DataFrame()  # Stop the loop and return an empty DataFrame
+                    except (InvalidResponseError, APIError, Exception) as e:
+                        logger.error(f"Error during question processing: {e}")
+                        return pd.DataFrame()  # Stop the loop and return an empty DataFrame
 
                 # Combine results of each iteration
                 iteration_results_df = pd.DataFrame(results)
@@ -391,7 +418,6 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
         final_results_df = pd.DataFrame()  # Return an empty DataFrame if no results
 
     return final_results_df
-
 
 # Function to save results to a CSV file in a new folder with today's date and current time
 def save_results_to_csv(final_results_df, models, folder_name, current_time):
