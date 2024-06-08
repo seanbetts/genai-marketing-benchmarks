@@ -35,7 +35,7 @@ The database of marketing questions currently contains **1,600+** multiple-choic
 ### Preliminary Results
 These results are from an initial test run of the benchmarks performed on **8th June 2024**:<br>
 
-| Model           | TOTAL↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
+| Model           | TOTAL ↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
 |-----------------|-------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|------------------|--------------|------------|-------|---------------|-----------|
 | Claude-3 Opus   | **83.0%**  | 73.3%  | 90.0%  | 93.1%      | **60.0%** | 68.4%  | **85.6%**          | **85.9%**                   | 70.0%   | **85.6%**       | **74.2%**       | 86.0%            | **77.0%**        | 60.0%      | 86.0% | 78.3%         | 97.0%     |
 | GPT-4o          | 81.9%  | 63.3%  | 88.0%  | **96.6%**     | 45.0% | **73.7%**  | 84.1%          | 83.8%                   | **75.0%**   | 82.4%       | 72.5%       | **92.0%**            | 73.5%        | **64.0%**      | 86.0% | **83.3%**        | **100.0%**    |
