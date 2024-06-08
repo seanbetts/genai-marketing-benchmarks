@@ -30,7 +30,7 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 **PROJECT PHASE ONE: IN PROGRESS**<br>
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs' responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
-The database of marketing questions currently contains **1,500+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ## GenAI Marketing Benchmark - Understanding Questions
 

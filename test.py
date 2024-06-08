@@ -10,6 +10,7 @@ import google.generativeai as gemini
 import curses
 import platform
 import requests
+import re
 
 # Clear console
 if platform.system() == "Windows":
@@ -32,10 +33,20 @@ if not os.path.exists(today_logs_folder):
     os.makedirs(today_logs_folder)
 
 # Load the Excel file into a pandas DataFrame
-file_path = os.path.join(base_folder, 'Test_Questions_FOR_TESTING.xlsx')
-if not os.path.exists(file_path):
-    raise FileNotFoundError(f"Excel file not found at path: {file_path}")
-df = pd.read_excel(file_path)
+# file_path = os.path.join(base_folder, 'Test_Questions_FOR_TESTING.xlsx')
+# if not os.path.exists(file_path):
+#     raise FileNotFoundError(f"Excel file not found at path: {file_path}")
+# df = pd.read_excel(file_path)
+
+# Load the questions table into a pandas DataFrame
+db_path = os.path.join(base_folder, 'results_database.sqlite')
+table_name = 'questions'
+if not os.path.exists(db_path):
+    raise FileNotFoundError(f"Database file not found at path: {db_path}")
+conn = sqlite3.connect(db_path)
+query = f"SELECT * FROM {table_name}"
+df = pd.read_sql_query(query, conn)
+conn.close()
 
 # Set up your OpenAI API key
 GPT_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -314,6 +325,8 @@ def calculate_token_cost(prompt_tokens, completion_tokens, model):
 
 # Function to test a specified number of questions
 def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selected_models):
+    def get_column_value(row, primary_col, fallback_col):
+        return row.get(primary_col, row.get(fallback_col, None))
     all_results = []
     try:
         for model_info in selected_models:
@@ -327,15 +340,15 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                 for index, row in df.head(num_questions).iterrows():
                     discipline = row['Discipline']
                     category = row['Category']
-                    sub_category = row['Sub-Category']
+                    sub_category = get_column_value(row, 'Sub-Category', 'Sub_Category')
                     question = row['Question']
                     difficulty = row['Difficulty']
-                    option_a = row['Option A']
-                    option_b = row['Option B']
-                    option_c = row['Option C']
-                    option_d = row['Option D']
+                    option_a = get_column_value(row, 'Option A', 'Option_A')
+                    option_b = get_column_value(row, 'Option B', 'Option_B')
+                    option_c = get_column_value(row, 'Option C', 'Option_C')
+                    option_d = get_column_value(row, 'Option D', 'Option_D')
                     choices = f"""A. {option_a}\nB. {option_b}\nC. {option_c}\nD. {option_d}"""
-                    correct_answer = row['Correct Option']
+                    correct_answer = get_column_value(row, 'Correct Option', 'Correct_Option')
                     logger.info(f"Round {iteration + 1}: Asked question #{index + 1}: {question}")
                     llm_answer, prompt_tokens, completion_tokens = ask_llm(provider, model_variant, question, choices, retry_count)
                     is_correct = llm_answer == correct_answer
@@ -406,6 +419,9 @@ def check_table_exists_and_get_highest_round(conn, table_name):
     return highest_round
 
 def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date, current_time):
+    def sanitize_column_name(col_name):
+        return re.sub(r'[^a-zA-Z0-9_]', '_', col_name)
+
     # Define the database file path (use a general name for the database)
     db_path = os.path.join(base_folder, 'results_database.sqlite')
 
@@ -416,6 +432,9 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     # Generate a unique table name based on the model and current date
     model_cleaned = model.split('/')[-1]
     table_name = f"{today_date}_{model_cleaned}".replace('-', '_').replace(':', '_').replace(' ', '_').replace('.', '_')
+
+    # Sanitize DataFrame column names
+    iteration_results_df.columns = [sanitize_column_name(col) for col in iteration_results_df.columns]
 
     # Save the DataFrame to the SQLite table
     iteration_results_df.to_sql(table_name, conn, if_exists='append', index=False)
@@ -456,7 +475,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     cursor.execute("PRAGMA table_info(discipline_summary)")
     existing_columns = [info[1] for info in cursor.fetchall()]
     for col in discipline_summary.index:
-        safe_col = col.replace(' ', '_')
+        safe_col = sanitize_column_name(col)
         if safe_col not in existing_columns:
             cursor.execute(f"ALTER TABLE discipline_summary ADD COLUMN {safe_col} REAL")
 
@@ -474,7 +493,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
         'Round': round_number,
         'Date': today_date,
     }
-    category_summary_data.update({cat.replace(' ', '_'): val for cat, val in category_summary.to_dict().items()})
+    category_summary_data.update({sanitize_column_name(cat): val for cat, val in category_summary.to_dict().items()})
 
     # Prepare the category summary DataFrame
     category_summary_df = pd.DataFrame([category_summary_data])
@@ -484,7 +503,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     cursor.execute("PRAGMA table_info(category_summary)")
     existing_columns = [info[1] for info in cursor.fetchall()]
     for col in category_summary.index:
-        safe_col = col.replace(' ', '_')
+        safe_col = sanitize_column_name(col)
         if safe_col not in existing_columns:
             cursor.execute(f"ALTER TABLE category_summary ADD COLUMN {safe_col} REAL")
 
