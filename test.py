@@ -10,7 +10,6 @@ import google.generativeai as gemini
 from together import Together
 import curses
 import platform
-import requests
 import re
 
 # Clear console
