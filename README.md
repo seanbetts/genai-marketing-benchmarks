@@ -33,7 +33,7 @@ Collect and create a bank of multiple-choice questions across the breadth and de
 The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ### Missing Quesitons
-As of **8th June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
+As of **9th June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
 - Content Marketing
 - Influencer Marketing
 - Brand Management
@@ -48,7 +48,7 @@ As of **8th June 2024**, the project is missing multiple-choice questions from t
 If there are other marketing disciplines that you think should be represented in the GenAI Marketing Benchmark database please raise an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) to let me know.
 
 ### Preliminary Results
-These results are from an initial test run of the benchmarks performed on **8th June 2024**:<br>
+These results are from an initial test run of the benchmarks performed on **9th June 2024**:<br>
 
 | Provider | Model           | TOTAL↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
 |----------|-----------------|--------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|------------------|--------------|------------|-------|---------------|-----------|
@@ -59,6 +59,7 @@ These results are from an initial test run of the benchmarks performed on **8th 
 | Anthropic| Claude-3 Haiku  | 76.3%  |**76.7%**| 78.0% | 86.2%      | 40.0% | 57.9%  | 81.3%          | 81.8%                   | 70.0%   | 72.8%       | 73.1%       | 80.0%            | 68.1%        | 56.0%      | 81.0% | 68.3%         | 98.5%     |
 | OpenAI   | GPT-3.5 Turbo   | 74.2%  | 56.7%  | 84.0%  | 89.7%      | 40.0% | 52.6%  | 78.5%          | 68.7%                   | 50.0%   | 73.1%       | 68.1%       | 80.0%            | 63.7%        | 60.0%      | 81.2% | 70.0%         | 95.5%     |
 | Google   | Gemini-1.5 Flash| 73.5%  | 66.7%  | 70.0%  | 82.8%      | 35.0% | 42.1%  | 75.7%          | 73.7%                   | 50.0%   | 73.4%       | 66.5%       | 82.0%            | 62.8%        | 56.0%      | 80.5% | 71.7%         | 98.5%     |
+| Meta     | Llama-3 8B      | 70.8%  | 56.7%  | 66.0%  | 79.3%      | 40.0% | 52.6%  | 72.0%          | 72.7%                   |**75.0%**| 69.4%       | 65.4%       | 82.0%            | 61.1%        | 40.0%      | 76.9% | 65.0%         | 97.0%     |
 
 ## PHASE TWO - Testing Marketing Understanding
 
