@@ -312,7 +312,7 @@ def ask_llm(provider, model, question, choices, retry_count):
         return ask_llm(provider, model, question, choices, retry_count - 1)
 
     answer = handle_response(response, provider)
-    answer, valid = answer_check(question, answer)
+    answer, valid = answer_check(answer)
 
     if not valid:
         return ask_llm(provider, model, question, choices, retry_count - 1)
@@ -321,7 +321,7 @@ def ask_llm(provider, model, question, choices, retry_count):
     return answer, prompt_tokens, completion_tokens
 
 # Define a function to check the answers
-def answer_check(question, answer):
+def answer_check(answer):
     valid_answers = ['A', 'B', 'C', 'D']
     answer = answer.upper().strip()
     if not answer or answer[0] not in valid_answers:
@@ -364,6 +364,8 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                     correct_answer = get_column_value(row, 'Correct Option', 'Correct_Option')
                     logger.info(f"Round {iteration + 1}: Asked question #{index + 1}: {question}")
                     llm_answer, prompt_tokens, completion_tokens = ask_llm(provider, model_variant, question, choices, retry_count)
+                    if llm_answer is None:
+                        logger.warning(f"No valid answer obtained for question #{index + 1}, answer set to None.")
                     is_correct = llm_answer == correct_answer
                     logger.info(f"Round {iteration + 1}: {model_name} Answer #{index + 1}: {llm_answer}, {is_correct}")
                     cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
@@ -458,7 +460,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     correct_answers = iteration_results_df['Correct'].sum()
     percentage_correct = round((correct_answers / total_questions) * 100, 2)  # Round to two decimal places
 
-    # Prepare the summary data
+    # Prepare the model summary data
     model_summary_data = {
         'Model': model,
         'Round': round_number,
@@ -470,7 +472,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     model_summary_df = pd.DataFrame([model_summary_data])
     model_summary_df.to_sql('model_summary', conn, if_exists='append', index=False)
 
-    # Calculate the discipline summary data
+    # Prepare the discipline summary data
     discipline_summary = iteration_results_df.groupby('Discipline')['Correct'].mean() * 100
     discipline_summary = discipline_summary.round(2)  # Round to two decimal places
     discipline_summary_data = {
@@ -498,13 +500,14 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     # Save the discipline summary data to the discipline_summary table
     discipline_summary_df.to_sql('discipline_summary', conn, if_exists='append', index=False)
 
-    # Calculate the category summary data
+    # Prepare the category summary data
     category_summary = iteration_results_df.groupby('Category')['Correct'].mean() * 100
     category_summary = category_summary.round(2)  # Round to two decimal places
     category_summary_data = {
         'Model': model,
         'Round': round_number,
         'Date': today_date,
+        'TOTAL': percentage_correct,
     }
     category_summary_data.update({sanitize_column_name(cat): val for cat, val in category_summary.to_dict().items()})
 

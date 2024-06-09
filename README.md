@@ -65,7 +65,7 @@ These results are from an initial test run of the benchmarks performed on **9th 
 | Mistral  | Mixtral-8x7B    | 70.8%  | 60.0%  | 52.0%  | 62.1%      |**65.0%**| 47.4%| 70.1%          | 68.7%                   | 50.0%   | 71.1%       | 64.8%       | 82.0%            | 68.1%        | 40.0%      | 77.2% | 65.0%         | 95.5%     |
 | Mistral  | Mixtral-7B      | 68.3%  | 56.7%  | 62.0%  | 79.3%      | 40.0% | 47.4%  | 70.1%          | 63.6%                   | 45.0%   | 65.2%       | 62.6%       | 88.0%            | 62.0%        | 64.0%      | 75.9% | 65.0%         | 89.4%     |
 
-*smaller parameter models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
+*some smaller parameter models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
 
 ## PHASE TWO - Testing Marketing Understanding
 
