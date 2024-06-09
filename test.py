@@ -11,6 +11,8 @@ from together import Together
 import curses
 import platform
 import re
+import time
+import threading
 
 # Clear console
 if platform.system() == "Windows":
@@ -260,6 +262,28 @@ def ask_llm(provider, model, question, choices, retry_count):
             return response.usage.prompt_tokens, response.usage.completion_tokens
         else:
             return 0, 0
+        
+    # Create a decorator to enforce rate limit
+    def rate_limited(max_per_second):
+        min_interval = 1.0 / max_per_second
+        lock = threading.Lock()
+        last_time_called = [0.0]
+
+        def decorator(func):
+            def wrapped(*args, **kwargs):
+                with lock:
+                    elapsed = time.time() - last_time_called[0]
+                    left_to_wait = min_interval - elapsed
+                    if left_to_wait > 0:
+                        time.sleep(left_to_wait)
+                    last_time_called[0] = time.time()
+                    return func(*args, **kwargs)
+            return wrapped
+        return decorator
+    
+    @rate_limited(1)  # Allow only one call per second
+    def rate_limited_make_api_call(provider, model, prompt):
+        return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
 
     def make_api_call(provider, model, prompt):
         try:
@@ -271,7 +295,7 @@ def ask_llm(provider, model, question, choices, retry_count):
                 model_instance = gemini.GenerativeModel(model)
                 return model_instance.generate_content(prompt), model_instance
             elif provider in ['Meta', 'Mistral']:
-                return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
+                return rate_limited_make_api_call(provider, model, prompt)
 
         except Exception as e:
             logger.error(f"Error during API call: {e}")
