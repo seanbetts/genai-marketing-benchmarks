@@ -7,6 +7,7 @@ import sqlite3
 from openai import OpenAI
 import anthropic
 import google.generativeai as gemini
+from together import Together
 import curses
 import platform
 import requests
@@ -32,12 +33,6 @@ today_logs_folder = os.path.join(logs_folder, today_date)
 if not os.path.exists(today_logs_folder):
     os.makedirs(today_logs_folder)
 
-# Load the Excel file into a pandas DataFrame
-# file_path = os.path.join(base_folder, 'Test_Questions_FOR_TESTING.xlsx')
-# if not os.path.exists(file_path):
-#     raise FileNotFoundError(f"Excel file not found at path: {file_path}")
-# df = pd.read_excel(file_path)
-
 # Load the questions table into a pandas DataFrame
 db_path = os.path.join(base_folder, 'results_database.sqlite')
 table_name = 'questions'
@@ -57,10 +52,8 @@ claude_client = anthropic.Anthropic(api_key=os.getenv('CLAUDE_API_KEY'))
 # Set up your Gemini API key
 gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
-# Set up HuggingFace API key
-hf_api_key = api_key=os.getenv('HUGGINGFACE_API_KEY')
-hf_headers = {"Authorization": f"Bearer {hf_api_key}"}
-HF_API_URL = "https://api-inference.huggingface.co/models/"
+# Set up Together API key
+together_client = Together(api_key=os.environ.get("TOGETHER_API_KEY"))
 
 # Define LLMs
 llms = [
@@ -74,17 +67,14 @@ llms = [
     {"name": "Gemini-1.0 Pro", "variant": "gemini-1.0-pro", "provider": "Google", "prompt": 0.5 / 1000000, "completion": 1.5 / 1000000},
     {"name": "Gemini-1.5 Flash", "variant": "gemini-1.5-flash", "provider": "Google", "prompt": 0.35 / 1000000, "completion": 1.05 / 1000000},
     {"name": "Gemini-1.5 Pro", "variant": "gemini-1.5-pro", "provider": "Google", "prompt": 1.75 / 1000000, "completion": 10.5 / 1000000},
-    {"name": "Llama-2-7B", "variant": "meta-llama/Llama-2-7B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
-    {"name": "Llama-2-13B", "variant": "meta-llama/Llama-2-13B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
-    {"name": "Llama-2-70B", "variant": "meta-llama/Llama-2-70B-chat", "provider": "Meta", "prompt": 0, "completion": 0},
-    {"name": "Llama-3-8B", "variant": "meta-llama/Meta-Llama-3-8B-Instruct", "provider": "Meta", "prompt": 0, "completion": 0},
-    {"name": "Llama-3-70B", "variant": "meta-llama/Meta-Llama-3-70B-Instruct", "provider": "Meta", "prompt": 0, "completion": 0},
-    {"name": "Mistral-7B", "variant": "mistralai/Mistral-7B-Instruct-v0.3", "provider": "Mistral", "prompt": 0, "completion": 0},
-    {"name": "Mixtral-8x7B", "variant": "mistralai/Mixtral-8x7B-Instruct-v0.1", "provider": "Mistral", "prompt": 0, "completion": 0},
-    {"name": "Mixtral-8x22B", "variant": "mistralai/Mixtral-8x22B-Instruct-v0.1", "provider": "Mistral", "prompt": 0, "completion": 0},
-    {"name": "Phi-3 Mini", "variant": "microsoft/Phi-3-mini-4k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0},
-    {"name": "Phi-3 Small", "variant": "microsoft/Phi-3-small-8k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0},
-    {"name": "Phi-3 Medium", "variant": "microsoft/Phi-3-medium-4k-instruct", "provider": "Microsoft", "prompt": 0, "completion": 0}
+    {"name": "Llama-2-7B", "variant": "meta-llama/Llama-2-7b-chat-hf", "provider": "Meta", "prompt": 0.2/1000000, "completion": 0.2/1000000},
+    {"name": "Llama-2-13B", "variant": "meta-llama/Llama-2-13b-chat-hf", "provider": "Meta", "prompt": 0.22/1000000, "completion": 0.22/1000000},
+    {"name": "Llama-2-70B", "variant": "meta-llama/Llama-2-70b-chat-hf", "provider": "Meta", "prompt": 0.9/1000000, "completion": 0.9/1000000},
+    {"name": "Llama-3-8B", "variant": "meta-llama/Llama-3-8b-chat-hf", "provider": "Meta", "prompt": 0.2/1000000, "completion": 0.2/1000000},
+    {"name": "Llama-3-70B", "variant": "meta-llama/Llama-3-70b-chat-hf", "provider": "Meta", "prompt": 0.9/1000000, "completion": 0.9/1000000},
+    {"name": "Mistral-7B", "variant": "mistralai/Mistral-7B-Instruct-v0.3", "provider": "Mistral", "prompt": 0.2/1000000, "completion": 0.2/1000000},
+    {"name": "Mixtral-8x7B", "variant": "mistralai/Mixtral-8x7B-Instruct-v0.1", "provider": "Mistral", "prompt": 0.6/1000000, "completion": 0.6/1000000},
+    {"name": "Mixtral-8x22B", "variant": "mistralai/Mixtral-8x22B-Instruct-v0.1", "provider": "Mistral", "prompt": 1.2/1000000, "completion": 1.2/1000000}
 ]
 
 def curses_menu(stdscr):
@@ -257,8 +247,8 @@ def ask_llm(provider, model, question, choices, retry_count):
             return response.content[0].text
         elif provider == 'Google':
             return response.text
-        elif provider == 'Meta':
-            return response[0]['generated_text'].split("Answer: ")[-1]
+        elif provider in ['Meta', 'Mistral']:
+            return response.choices[0].message.content
 
     def handle_tokens(response, provider, prompt=None, answer=None, model_instance=None):
         if provider == 'OpenAI':
@@ -267,6 +257,8 @@ def ask_llm(provider, model, question, choices, retry_count):
             return response.usage.input_tokens, response.usage.output_tokens
         elif provider == 'Google':
             return model_instance.count_tokens(prompt).total_tokens, model_instance.count_tokens(answer).total_tokens
+        elif provider in ['Meta', 'Mistral']:
+            return response.usage.prompt_tokens, response.usage.completion_tokens
         else:
             return 0, 0
 
@@ -279,11 +271,9 @@ def ask_llm(provider, model, question, choices, retry_count):
             elif provider == 'Google':
                 model_instance = gemini.GenerativeModel(model)
                 return model_instance.generate_content(prompt), model_instance
-            elif provider == 'Meta':
-                META_API_URL = HF_API_URL + model
-                payload = {"inputs": prompt, "parameters": {"wait_for_model": "true"}}
-                response = requests.post(META_API_URL, headers=hf_headers, json=payload)
-                return response.json(), None
+            elif provider in ['Meta', 'Mistral']:
+                return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
+
         except Exception as e:
             logger.error(f"Error during API call: {e}")
             return None, None
