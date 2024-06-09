@@ -24,7 +24,7 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 - Assesses new GenAI models and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
-##  PHASE ONE - Knowledge Questions
+##  PHASE ONE - Testing Marketing Knowledge
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
 ### IN PROGRESS
@@ -60,12 +60,12 @@ These results are from an initial test run of the benchmarks performed on **8th 
 | OpenAI   | GPT-3.5 Turbo   | 74.2%  | 56.7%  | 84.0%  | 89.7%      | 40.0% | 52.6%  | 78.5%          | 68.7%                   | 50.0%   | 73.1%       | 68.1%       | 80.0%            | 63.7%        | 60.0%      | 81.2% | 70.0%         | 95.5%     |
 | Google   | Gemini-1.5 Flash| 73.5%  | 66.7%  | 70.0%  | 82.8%      | 35.0% | 42.1%  | 75.7%          | 73.7%                   | 50.0%   | 73.4%       | 66.5%       | 82.0%            | 62.8%        | 56.0%      | 80.5% | 71.7%         | 98.5%     |
 
-## PHASE TWO - Understanding Questions
+## PHASE TWO - Testing Marketing Understanding
 
 ### NOT STARTED
 Collect and create a bank of open-ended questions across the breadth and depth of marketing that can be used to test the **understanding** LLMs have of important marketing concepts. The LLMs' responses to these open-ended questions will be graded by another LLM, with access to acredited source material that can be used as reference, on the marketing concepts tested in each open-ended question.
 
-## PHASE THREE - Capabilities Questions
+## PHASE THREE - Testing Marketing Capabilities
 
 ### NOT STARTED
 Collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
