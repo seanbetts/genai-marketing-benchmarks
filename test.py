@@ -281,8 +281,8 @@ def ask_llm(provider, model, question, choices, retry_count):
             return wrapped
         return decorator
     
-    @rate_limited(1)  # Allow only one call per second
-    def rate_limited_make_api_call(provider, model, prompt):
+    @rate_limited(1 / 1.1)  # Allow only one call per 1.1 seconds
+    def rate_limited_api_call(model, prompt):
         return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
 
     def make_api_call(provider, model, prompt):
@@ -295,7 +295,7 @@ def ask_llm(provider, model, question, choices, retry_count):
                 model_instance = gemini.GenerativeModel(model)
                 return model_instance.generate_content(prompt), model_instance
             elif provider in ['Meta', 'Mistral']:
-                return rate_limited_make_api_call(provider, model, prompt)
+                return rate_limited_api_call(model, prompt)
 
         except Exception as e:
             logger.error(f"Error during API call: {e}")
