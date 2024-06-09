@@ -33,7 +33,7 @@ Collect and create a bank of multiple-choice questions across the breadth and de
 The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ### Missing Quesitons
-As of **8th June 2024**, the project is missing multiple-choice quesitons from the following marketing discilpines:
+As of **8th June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
 - Content Marketing
 - Influencer Marketing
 - Brand Management
