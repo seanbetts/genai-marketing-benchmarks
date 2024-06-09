@@ -2,33 +2,33 @@
 
 ## Introduction
 
-Generative AI (GenAI) has the potential to transform the marketing industry, yet there is currently no comprehensive way to assess the marketing capabilities of GenAI models. This project aims to fill that gap by creating a benchmark that evaluates GenAI models' knowledge, understanding, and ability to perform marketing tasks.
+Generative AI (GenAI) has the potential to transform the marketing industry, yet there is currently no comprehensive way to assess the marketing capabilities of Large Language Models (LLMs) and other GenAI technologies. This project aims to fill that gap by creating benchmark tests that evaluate GenAI technnology's knowledge, understanding, and ability to perform marketing tasks.
 
 ## The Challenge
 
-The marketing industry lacks standardized benchmarks to evaluate GenAI models specifically for marketing capabilities. While there are existing benchmarks for general AI capabilities, these do not adequately cover the breadth and depth required for marketing.
+The marketing industry lacks standardized benchmarks to evaluate GenAI models specifically for marketing knowledge, understanding, and capabilities. While there are existing benchmarks for general GenAI capabilities, these do not adequately cover the breadth and depth required for marketing.
 
 ### Key Issues:
-- Existing benchmarks primarily test general knowledge, not marketing-specific knowledge, understanding or reasoning.
-- Limited number of marketing-related questions in current benchmarks (e.g., the [MMMU Benchmark](https://mmmu-benchmark.github.io) has only **216** marketing questions and **12** advertising images).
+- Existing GenAI benchmarks primarily test general knowledge, not marketing-specific knowledge, understanding or capabilities.
+- There are a limited number of marketing-related questions in current GenAI benchmark tests (e.g., the [MMMU Benchmark](https://mmmu-benchmark.github.io) has only **216** marketing questions and **12** advertising images).
 - Clients, platforms, and agencies need reliable benchmarks to select, develop, and fine-tune GenAI tools.
 
 ## Project Objective
 
-To create a comprehensive bank of questions, tests, and tasks that can be used to benchmark GenAI models knowledge, understanding and capabilities across all aspects of marketing.
+To create a comprehensive bank of questions, tests, and tasks that can be used to benchmark GenAI technnology's knowledge, understanding and capabilities across all aspects of marketing.
 
 ### Benefits:
 - Provides a valuable resource for the marketing industry.
-- Offers an objective way to test GenAI's marketing knowledge and capabilities.
-- Enables comparison between different GenAI models.
-- Assesses new GenAI models and features as they are released.
+- Offers an objective way to test GenAI technology's marketing knowledge and capabilities.
+- Enables comparison between different GenAI technologies.
+- Assesses new GenAI technologies and features as they are released.
 - Monitors improvements in GenAI capabilities over time.
 
 ##  PHASE ONE - Testing Marketing Knowledge
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
 ### IN PROGRESS
-Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs' responses to these multiple-choice questions will be scored on whether they get the right answer or not.
+Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
 The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
@@ -70,8 +70,8 @@ Collect and create a bank of open-ended questions across the breadth and depth o
 ### NOT STARTED
 Collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
-## Models
-The code currently allows the testing of the following GenAI models:
+## Large Language Models
+The code currently allows the user to test the following LLMs:
 - Anthropic (Claude-3 Haiku, Claude-3 Sonnet, Claude-3 Opus)
 - OpenAI (GPT-3.5 Turbo, GPT-4, GPT-4 Turbo, GPT-4o)
 - Google (Gemini-1.0 Pro, Gemini-1.5 Flash, Gemini-1.5 Pro)
