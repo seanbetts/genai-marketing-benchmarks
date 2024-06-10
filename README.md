@@ -27,7 +27,7 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 ##  PHASE ONE - Testing Marketing Knowledge
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
-### Status: IN PROGRESS
+### Status: PROOF OF CONCEPT
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
 The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
@@ -64,6 +64,7 @@ These results are from an initial test run of the benchmarks performed on **9th 
 | Mistral  | Mixtral-8x7B    | 70.8%  | 60.0%  | 52.0%  | 62.1%      |**65.0%**| 47.4%| 70.1%          | 68.7%                   | 50.0%   | 71.1%       | 64.8%       | 82.0%            | 68.1%        | 40.0%      | 77.2% | 65.0%         | 95.5%     |
 | Meta     | Llama-3 8B      | 70.8%  | 56.7%  | 66.0%  | 79.3%      | 40.0% | 52.6%  | 72.0%          | 72.7%                   | 75.0%   | 69.4%       | 65.4%       | 82.0%            | 61.1%        | 40.0%      | 76.9% | 65.0%         | 97.0%     |
 | Mistral  | Mixtral-7B      | 68.3%  | 56.7%  | 62.0%  | 79.3%      | 40.0% | 47.4%  | 70.1%          | 63.6%                   | 45.0%   | 65.2%       | 62.6%       | 88.0%            | 62.0%        | 64.0%      | 75.9% | 65.0%         | 89.4%     |
+| Meta     | Llama-2 7B*     | 58.2%  | 56.7%  | 64.0%  | 65.5%      | 25.0% | 52.6%  | 68.2%          | 71.7%                   | 60.0%   | 55.2%       | 55.5%       | 74.0%            | 46.0%        | 32.0%      | 58.4% | 55.0%         | 69.7%     |
 
 *some smaller parameter models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
 
