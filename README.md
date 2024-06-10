@@ -22,7 +22,7 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 - Offers an objective way to test GenAI technology's marketing knowledge and capabilities.
 - Enables comparison between different GenAI technologies.
 - Assesses new GenAI technologies and features as they are released.
-- Monitors improvements in GenAI capabilities over time.
+- Monitors improvements in GenAI knowledge and capabilities over time.
 
 ##  PHASE ONE - Testing Marketing Knowledge
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
