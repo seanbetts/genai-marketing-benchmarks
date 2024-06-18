@@ -335,7 +335,7 @@ def answer_check(answer):
     answer = answer.upper().strip()
     if answer.startswith("##", "**"):
         answer = answer[2:].strip()  # Remove '##' and strip any leading/trailing spaces
-    elif answer.startswith("*"):
+    elif answer.startswith("#", "*"):
         answer = answer[1:].strip()  # Remove '*' and strip any leading/trailing spaces
     answer = answer[0] if answer else ''  # Keep only the first character
     if not answer or answer not in valid_answers:
