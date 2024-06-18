@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 import sqlite3
 from openai import OpenAI
 import anthropic
-import google.generativeai as gemini
+# import google.generativeai as gemini
+import vertexai
+from vertexai.generative_models import GenerativeModel
 from together import Together
 import curses
 import platform
@@ -51,7 +53,9 @@ GPT_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 claude_client = anthropic.Anthropic(api_key=os.getenv('CLAUDE_API_KEY'))
 
 # Set up your Gemini API key
-gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
+project_id = "gen-lang-client-0130870695"
+vertexai.init(project=project_id, location="europe-west2")
+# gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 # Set up Together API key
 together_client = Together(api_key=os.environ.get("TOGETHER_API_KEY"))
@@ -283,7 +287,11 @@ def ask_llm(provider, model, question, choices, retry_count):
     
     @rate_limited(1 / 1.1)  # Allow only one call per 1.1 seconds
     def rate_limited_api_call(model, prompt):
-        return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
+        if "gemini" in model:
+            model_instance = GenerativeModel(model)
+            return model_instance.generate_content(prompt), model_instance
+        else:
+            return together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}]), None
 
     def make_api_call(provider, model, prompt):
         try:
@@ -292,8 +300,9 @@ def ask_llm(provider, model, question, choices, retry_count):
             elif provider == 'Anthropic':
                 return claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}]), None
             elif provider == 'Google':
-                model_instance = gemini.GenerativeModel(model)
-                return model_instance.generate_content(prompt), model_instance
+                #model_instance = gemini.GenerativeModel(model)
+                #return model_instance.generate_content(prompt), model_instance
+                return rate_limited_api_call(model, prompt)
             elif provider in ['Meta', 'Mistral']:
                 return rate_limited_api_call(model, prompt)
 
