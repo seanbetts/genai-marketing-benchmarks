@@ -61,12 +61,14 @@ These results are from an initial test run of the benchmarks performed on **9th 
 | Mistral  | Mixtral-8x22B   | 74.2%  | 60.0%  | 88.0%  | 89.7%      | 40.0% | 47.4%  | 79.4%          | 73.7%                   | 60.0%   | 70.5%       | 66.5%       | 80.0%            | 71.7%        | 48.0%      | 79.7% | 65.0%         | 97.0%     |
 | OpenAI   | GPT-3.5 Turbo   | 74.2%  | 56.7%  | 84.0%  | 89.7%      | 40.0% | 52.6%  | 78.5%          | 68.7%                   | 50.0%   | 73.1%       | 68.1%       | 80.0%            | 63.7%        | 60.0%      | 81.2% | 70.0%         | 95.5%     |
 | Google   | Gemini-1.5 Flash| 73.5%  | 66.7%  | 70.0%  | 82.8%      | 35.0% | 42.1%  | 75.7%          | 73.7%                   | 50.0%   | 73.4%       | 66.5%       | 82.0%            | 62.8%        | 56.0%      | 80.5% | 71.7%         | 98.5%     |
+| Meta     | Llama-2 70B     | 71.7%  | 60.0%  | 82.0%  | 86.2%      | 20.0% | 63.2%  | 76.6%          | 77.8%                   | 60.0%   | 73.7%       | 64.3%       | 80.0%            | 58.0%        | 48.0%      | 75.4% | 60.0%         | 92.4%     |
 | Mistral  | Mixtral-8x7B    | 70.8%  | 60.0%  | 52.0%  | 62.1%      |**65.0%**| 47.4%| 70.1%          | 68.7%                   | 50.0%   | 71.1%       | 64.8%       | 82.0%            | 68.1%        | 40.0%      | 77.2% | 65.0%         | 95.5%     |
 | Meta     | Llama-3 8B      | 70.8%  | 56.7%  | 66.0%  | 79.3%      | 40.0% | 52.6%  | 72.0%          | 72.7%                   | 75.0%   | 69.4%       | 65.4%       | 82.0%            | 61.1%        | 40.0%      | 76.9% | 65.0%         | 97.0%     |
 | Mistral  | Mixtral-7B      | 68.3%  | 56.7%  | 62.0%  | 79.3%      | 40.0% | 47.4%  | 70.1%          | 63.6%                   | 45.0%   | 65.2%       | 62.6%       | 88.0%            | 62.0%        | 64.0%      | 75.9% | 65.0%         | 89.4%     |
 | Meta     | Llama-2 7B*     | 58.2%  | 56.7%  | 64.0%  | 65.5%      | 25.0% | 52.6%  | 68.2%          | 71.7%                   | 60.0%   | 55.2%       | 55.5%       | 74.0%            | 46.0%        | 32.0%      | 58.4% | 55.0%         | 69.7%     |
+| Google   | Gemini-1.0 Pro* | 47.3%  | 50.0%  | 60.0%  | 65.5%      | 40.0% | 21.1%  | 32.7%          | 37.4%                   | 25.0%   | 45.6%       | 41.8%       | 54.0%            | 40.2%        | 24.0%      | 59.4% | 38.3%         | 59.1%     |
 
-*some smaller parameter models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
+*some models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
 
 ## PHASE TWO - Testing Marketing Understanding
 

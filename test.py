@@ -243,7 +243,7 @@ logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions
 # Define a function to call LLM API
 def ask_llm(provider, model, question, choices, retry_count):
     def make_prompt(question, choices):
-        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
+        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice. DO NOT give an explanation.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
 
     def handle_response(response, provider):
         if provider == 'OpenAI':
@@ -333,10 +333,15 @@ def ask_llm(provider, model, question, choices, retry_count):
 def answer_check(answer):
     valid_answers = ['A', 'B', 'C', 'D']
     answer = answer.upper().strip()
-    if not answer or answer[0] not in valid_answers:
+    if answer.startswith("##", "**"):
+        answer = answer[2:].strip()  # Remove '##' and strip any leading/trailing spaces
+    elif answer.startswith("*"):
+        answer = answer[1:].strip()  # Remove '*' and strip any leading/trailing spaces
+    answer = answer[0] if answer else ''  # Keep only the first character
+    if not answer or answer not in valid_answers:
         logger.warning(f"Invalid answer received: {answer}. Retrying...")
         return answer, False
-    return answer[0], True
+    return answer, True
 
 # Define a function to calculate the cost of tokens used
 def calculate_token_cost(prompt_tokens, completion_tokens, model):
