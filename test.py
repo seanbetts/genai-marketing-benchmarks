@@ -333,11 +333,11 @@ def ask_llm(provider, model, question, choices, retry_count):
 def answer_check(answer):
     valid_answers = ['A', 'B', 'C', 'D']
     answer = answer.upper().strip()
-    if answer.startswith("##", "**"):
-        answer = answer[2:].strip()  # Remove '##' and strip any leading/trailing spaces
-    elif answer.startswith("#", "*"):
-        answer = answer[1:].strip()  # Remove '*' and strip any leading/trailing spaces
-    answer = answer[0] if answer else ''  # Keep only the first character
+    if answer.startswith(('##', '**')):
+        answer = answer[2:].strip()  # Remove '##' or '**' and strip any leading/trailing spaces
+    elif answer.startswith(('#', '*')):
+        answer = answer[1:].strip()  # Remove '#' or '*' and strip any leading/trailing spaces
+    answer = answer[0] if answer else ''  # Keep only the first character if it exists
     if not answer or answer not in valid_answers:
         logger.warning(f"Invalid answer received: {answer}. Retrying...")
         return answer, False

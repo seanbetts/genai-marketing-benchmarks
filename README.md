@@ -27,6 +27,8 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 ##  PHASE ONE - Testing Marketing Knowledge
 ![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
 
+Some of these questions are UK-centric and have a bias towards the UK marketing industry. Many of the questions are globally applicable though.
+
 ### Status: PROOF OF CONCEPT
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
@@ -52,10 +54,11 @@ These results are from an initial test run of the benchmarks performed on **9th 
 
 | Provider | Model           | TOTAL↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
 |----------|-----------------|--------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|------------------|--------------|------------|-------|---------------|-----------|
-| Anthropic| Claude-3 Opus   |**83.0%**| 73.3% | 90.0%  | 93.1%      |60.0%  | 68.4%  |**85.6%**       |**85.9%**                | 70.0%   |**85.6%**    |**74.2%**    | 86.0%            |**77.0%**     | 60.0%      | 86.0% | 78.3%         | 97.0%     |
-| OpenAI   | GPT-4o          | 81.9%  | 63.3%  | 88.0%  |**96.6%**   | 45.0% |**73.7%**| 84.1%         | 83.8%                   | 75.0%   | 82.4%       | 72.5%       |**92.0%**         | 73.5%        |**64.0%**   | 86.0% |**83.3%**      |**100.0%** |
+| Anthropic| Claude-3 Opus   |**83.0%**| 73.3% | 90.0%  | 93.1%      | 60.0% | 68.4%  |**85.6%**       |**85.9%**                | 70.0%   |**85.6%**    |**74.2%**    | 86.0%            |**77.0%**     | 60.0%      | 86.0% | 78.3%         | 97.0%     |
+| OpenAI   | GPT-4o          | 81.9%  | 63.3%  | 88.0%  |**96.6%**   | 45.0% |**73.7%**| 84.1%         | 83.8%                   | 75.0%   | 82.4%       | 72.5%       |**92.0%**         | 73.5%        | 64.0%      | 86.0% |**83.3%**      |**100.0%** |
 | OpenAI   | GPT-4 Turbo     | 81.0%  | 70.0%  |**94.0%**| 93.1%     | 40.0% | 68.4%  | 81.3%          | 75.8%                   | 65.0%   | 82.2%       | 72.0%       | 86.0%            | 71.7%        | 60.0%      |**88.3%**| 75.0%       | 98.5%     |
-| Meta     | Llama-3 70B     | 79.8%  | 63.3%  | 90.0%  |**96.6%**   |60.0%  | 52.6%  | 84.11%         | 76.8%                   |**85.0%**| 79.6%       | 71.4%       | 90.0%            | 69.0%        | 52.0%      | 86.0% | 75.0%         | 95.5%     |
+| Google   | Gemini-1.5 Pro  | 80.7%  | 66.7%  | 80.0%  |**96.6%**   | 60.0% | 57.9%  | 79.4%          |**85.9%**                | 65.0%   | 81.6%       | 73.6%       | 84.0%            | 74.1%        |**72.0%**   | 84.3% | 78.3%         |**100.0%** |
+| Meta     | Llama-3 70B     | 79.8%  | 63.3%  | 90.0%  |**96.6%**   | 60.0% | 52.6%  | 84.11%         | 76.8%                   |**85.0%**| 79.6%       | 71.4%       | 90.0%            | 69.0%        | 52.0%      | 86.0% | 75.0%         | 95.5%     |
 | Anthropic| Claude-3 Sonnet | 76.4%  | 66.7%  | 76.0%  | 75.9%      | 45.0% | 42.1%  | 80.4%          | 74.8%                   | 65.0%   | 77.1%       | 73.6%       | 84.0%            | 68.1%        | 48.0%      | 81.0% | 75.0%         | 98.5%     |
 | Anthropic| Claude-3 Haiku  | 76.3%  |**76.7%**| 78.0% | 86.2%      | 40.0% | 57.9%  | 81.3%          | 81.8%                   | 70.0%   | 72.8%       | 73.1%       | 80.0%            | 68.1%        | 56.0%      | 81.0% | 68.3%         | 98.5%     |
 | Mistral  | Mixtral-8x22B   | 74.2%  | 60.0%  | 88.0%  | 89.7%      | 40.0% | 47.4%  | 79.4%          | 73.7%                   | 60.0%   | 70.5%       | 66.5%       | 80.0%            | 71.7%        | 48.0%      | 79.7% | 65.0%         | 97.0%     |

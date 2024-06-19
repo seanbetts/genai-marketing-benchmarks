@@ -1,2 +1,4 @@
 .env
 .DS_Store
+pdf.py
+pdf_prompt.md
