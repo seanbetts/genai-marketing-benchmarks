@@ -50,7 +50,7 @@ As of **9th June 2024**, the project is missing multiple-choice questions from t
 If there are other marketing disciplines that you think should be represented in the GenAI Marketing Benchmark database please raise an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) to let me know.
 
 ### Preliminary Results
-These results are from an initial test run of the benchmarks performed on **9th June 2024**:<br>
+These results are from an initial test run of the benchmarks performed on **9th June 2024** with Claude 3.5 Sonnet added on **20th June 2024**:<br>
 
 | Provider | Model           | TOTAL↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
 |----------|-----------------|--------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|------------------|--------------|------------|-------|---------------|-----------|
