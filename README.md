@@ -24,8 +24,14 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 - Assesses new GenAI technologies and features as they are released.
 - Monitors improvements in GenAI knowledge and capabilities over time.
 
+## Contributors
+
+I'd like to thank the following organisations for their help and support on the project:
+![Contributors](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Contributors.png)
+
+
 ##  PHASE ONE - Testing Marketing Knowledge
-![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions%20_June_2024.png)
+![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions_09_June_2024.png)
 
 Some of these questions are UK-centric and have a bias towards the UK marketing industry. Many of the questions are globally applicable though.
 

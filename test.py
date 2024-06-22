@@ -127,7 +127,10 @@ def curses_menu(stdscr):
 selected_models = curses.wrapper(curses_menu)
 
 # Create log file
-log_file = os.path.join(today_logs_folder, f"{'_'.join([model['variant'].replace('/', '_') for model in selected_models])}_{current_time}.log")
+if len(selected_models) > 1:
+    log_file = os.path.join(today_logs_folder, f"Multi Model Run - {current_time}.log")
+else:
+    log_file = os.path.join(today_logs_folder, f"{'_'.join([model['variant'].replace('/', '_') for model in selected_models])}_{current_time}.log")
 
 # Create and configure logger
 logger = logging.getLogger(__name__)
@@ -368,7 +371,6 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                     category = row['Category']
                     sub_category = get_column_value(row, 'Sub-Category', 'Sub_Category')
                     question = row['Question']
-                    difficulty = row['Difficulty']
                     option_a = get_column_value(row, 'Option A', 'Option_A')
                     option_b = get_column_value(row, 'Option B', 'Option_B')
                     option_c = get_column_value(row, 'Option C', 'Option_C')
@@ -389,7 +391,6 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                         'Category': category,
                         'Sub_Category': sub_category,
                         'Question': question,
-                        'Difficulty': difficulty,
                         'Correct_Answer': correct_answer,
                         'Provider': provider,
                         'Model': model_name,
