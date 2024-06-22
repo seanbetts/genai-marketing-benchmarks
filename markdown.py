@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import re
+from datetime import datetime
 
 # Connect to SQLite database
 conn = sqlite3.connect('../results_database.sqlite')
@@ -108,13 +109,6 @@ def clean_model_name(model_name, provider):
         model_name = model_name.replace('-', ' ')
     return model_name
 
-
-
-
-
-
-
-
 df['Model'] = df.apply(lambda row: clean_model_name(row['Model'], row['Provider']), axis=1)
 
 # Convert relevant columns to numeric and round to one decimal place
@@ -143,8 +137,12 @@ markdown_table += "| " + " | ".join(["-"*len(header) for header in headers]) + "
 for index, row in df.iterrows():
     markdown_table += "| " + " | ".join(str(row.get(header, "")) for header in headers) + " |\n"
 
-# Write the markdown table to a file
-with open("category_summary.md", "w") as file:
+# Get today's date
+today_date = datetime.today().strftime('%d-%m-%Y')
+
+# Write the markdown table to a file with today's date in the filename
+file_name = f"Results/Marketing Benchmark Results - {today_date}.md"
+with open(file_name, "w") as file:
     file.write(markdown_table)
 
 print("Markdown file created successfully")
