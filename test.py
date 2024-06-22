@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 import sqlite3
 from openai import OpenAI
 import anthropic
-# import google.generativeai as gemini
 import vertexai
 from vertexai.generative_models import GenerativeModel
 from together import Together
@@ -55,7 +54,6 @@ claude_client = anthropic.Anthropic(api_key=os.getenv('CLAUDE_API_KEY'))
 # Set up your Gemini API key
 project_id = "gen-lang-client-0130870695"
 vertexai.init(project=project_id, location="europe-west2")
-# gemini_client = gemini.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 # Set up Together API key
 together_client = Together(api_key=os.environ.get("TOGETHER_API_KEY"))
@@ -244,7 +242,7 @@ logger.info(f"Estimated cost for running {num_rounds} rounds with {num_questions
 # Define a function to call LLM API
 def ask_llm(provider, model, question, choices, retry_count):
     def make_prompt(question, choices):
-        return f"Choose the correct answer for the following multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice. DO NOT give an explanation.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
+        return f"Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice. DO NOT give an explanation.\n\nQuestion: {question}\n\nChoices:\n{choices}\n\nAnswer:"
 
     def handle_response(response, provider):
         if provider == 'OpenAI':
