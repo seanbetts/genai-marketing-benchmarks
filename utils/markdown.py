@@ -2,14 +2,14 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 import curses
-from utils.functions import determine_provider, clean_model_name, clear_console
+from functions import determine_provider, clean_model_name, clear_console
 
 # Clear console
 clear_console()
 
 # Function to initialize the database connection and fetch dates
 def get_dates():
-    conn = sqlite3.connect('../results_database.sqlite')
+    conn = sqlite3.connect('../../results_database.sqlite')
     query = "SELECT Date, COUNT(*) as record_count, AVG(TOTAL) as total_avg FROM category_summary GROUP BY Date"
     dates_df = pd.read_sql_query(query, conn)
     conn.close()
@@ -63,7 +63,7 @@ def curses_menu(dates_df):
 # Main function to generate markdown file
 def generate_markdown(selected_date):
     # Connect to SQLite database
-    conn = sqlite3.connect('../results_database.sqlite')
+    conn = sqlite3.connect('../../results_database.sqlite')
 
     # Read data from category_summary table with selected date
     df = pd.read_sql_query(f"SELECT * FROM category_summary WHERE Date >= '{selected_date}'", conn)
@@ -124,7 +124,7 @@ def generate_markdown(selected_date):
     today_date = datetime.today().strftime('%d-%m-%Y')
 
     # Write the markdown table to a file with today's date in the filename
-    file_name = f"Results/Marketing Benchmark Results - {today_date}.md"
+    file_name = f"../Results/Marketing Benchmark Results - {today_date}.md"
     with open(file_name, "w") as file:
         file.write(markdown_table)
 

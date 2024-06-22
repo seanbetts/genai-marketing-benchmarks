@@ -4,12 +4,15 @@ from datetime import datetime
 import curses
 import pandas as pd
 import re
-from utils.functions import determine_provider, clean_model_name, clear_console
+from functions import determine_provider, clean_model_name, clear_console
 
 clear_console()
 
+# Get the absolute path of the current file
+current_file_path = os.path.abspath(__file__)
+
 # Set up folder
-base_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+base_folder = os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))
 
 def get_table_names_with_timestamp(cursor):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
