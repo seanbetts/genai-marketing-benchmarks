@@ -371,6 +371,7 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                     category = row['Category']
                     sub_category = get_column_value(row, 'Sub-Category', 'Sub_Category')
                     question = row['Question']
+                    question_code = row['Question_Code']
                     option_a = get_column_value(row, 'Option A', 'Option_A')
                     option_b = get_column_value(row, 'Option B', 'Option_B')
                     option_c = get_column_value(row, 'Option C', 'Option_C')
@@ -390,6 +391,7 @@ def test_llm_with_questions(df, num_questions, num_rounds, initial_rounds, selec
                         'Discipline': discipline,
                         'Category': category,
                         'Sub_Category': sub_category,
+                        'Question_Code':question_code,
                         'Question': question,
                         'Correct_Answer': correct_answer,
                         'Provider': provider,
