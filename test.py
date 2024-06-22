@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import platform
 import logging
 from datetime import datetime
 from dotenv import load_dotenv
@@ -10,7 +11,6 @@ import vertexai
 from vertexai.generative_models import GenerativeModel
 from together import Together
 import curses
-import platform
 import re
 import time
 import threading
