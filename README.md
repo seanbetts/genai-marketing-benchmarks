@@ -26,7 +26,7 @@ To create a comprehensive bank of questions, tests, and tasks that can be used t
 
 ## Contributors
 
-I'd like to thank the following organisations for their help and support on the project:
+I'd like to thank the following organisations for supporting the project by providng training content, testing questions, and advice:
 ![Contributors](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Contributors.png)
 
 
