@@ -87,11 +87,15 @@ These results are from a test run of the benchmarks performed on **23rd June 202
 ## PHASE TWO - Testing Marketing Understanding
 
 ### Status: NOT STARTED
+
+#### Aim
 Collect and create a bank of open-ended questions across the breadth and depth of marketing that can be used to test the **understanding** LLMs have of important marketing concepts. The LLMs' responses to these open-ended questions will be graded by another LLM, with access to acredited source material that can be used as reference, on the marketing concepts tested in each open-ended question.
 
 ## PHASE THREE - Testing Marketing Capabilities
 
 ### Status: NOT STARTED
+
+#### Aim
 Collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
 ## Large Language Models
