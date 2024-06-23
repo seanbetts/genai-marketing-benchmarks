@@ -36,9 +36,9 @@ I'd like to thank the following organisations for supporting the project by prov
 Some of these questions are UK-centric and have a bias towards the UK marketing industry. Many of the questions are globally applicable though.
 
 ### Status: MINIMAL VIABLE PRODUCT
-Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
+I have collected and created a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions are scored on whether they pick right answer or not.
 
-The database of marketing questions currently contains **2,800+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+The database of marketing knowledge questions currently contains **2,800+** multiple-choice questions. The question bank needs broadening out further to include all marketing categories and ensure a high enough volume of questions for each category to make the benchmarks robust.
 
 ### More Questions Required
 As of **23rd June 2024**, the project has a low number of questions for the following marketing discilpines and requires more adding to make the benchmark scores more robust:
