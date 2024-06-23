@@ -111,14 +111,14 @@ More open source models can be easily added to the code if supported by [Togethe
 ## Testing Methodology - Marketing Knowledge
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
-Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.<br><br>
+*Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.<br><br>
 Question: Which channel is considered most effective for long-term brand building?<br><br>
 Choices:<br>
 A. Radio<br>
 B. TV<br>
 C. Online ads<br>
 D. Print<br><br>
-Answer:
+Answer:*
 
 ## Testing Methodology - Marketing Understanding
 
