@@ -5,7 +5,7 @@ import curses
 import pandas as pd
 import re
 from typing import List, Tuple, Optional
-from functions import determine_provider, clean_model_name, clear_console
+from utils import determine_provider, clean_model_name, clear_console
 
 class DatabaseError(Exception):
     """Custom exception for database-related errors."""

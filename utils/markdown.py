@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 import curses
-from functions import determine_provider, clean_model_name, clear_console
+from utils import determine_provider, clean_model_name, clear_console
 
 # Clear console
 clear_console()
