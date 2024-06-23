@@ -31,23 +31,32 @@ I'd like to thank the following organisations for supporting the project by prov
 
 
 ##  PHASE ONE - Testing Marketing Knowledge
-![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions_09_June_2024.png)
+![GenAI Marketing Benchmark Questions](https://github.com/seanbetts/genai-marketing-benchmarks/blob/main/Images/Questions_23_June_2024.png)
 
 Some of these questions are UK-centric and have a bias towards the UK marketing industry. Many of the questions are globally applicable though.
 
 ### Status: PROOF OF CONCEPT
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
-The database of marketing questions currently contains **1,600+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+The database of marketing questions currently contains **2,800++** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+
+### More Questions Required
+As of **23rd June 2024**, the project has a low number of questions for the following marketing discilpines and requires more adding to make the benchmark scores more robust:
+- Publishing
+- Outdoor
+- eCommerce
+- Content Marketing
+- Web Analytics
+- Ad Ops
+- Privacy & Ethics
+- Affiliates
+- Market Research & Insights
+- Influecer Marketing
 
 ### Missing Quesitons
-As of **9th June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
-- Content Marketing
-- Influencer Marketing
+As of **23rd June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
 - Brand Management
 - Customer Relationship Management (CRM)
-- Market Research and Insights
-- Public Relations (PR)
 - Email Marketing
 - Mobile Marketing
 - Customer Experience (CX)
@@ -56,29 +65,22 @@ As of **9th June 2024**, the project is missing multiple-choice questions from t
 If there are other marketing disciplines that you think should be represented in the GenAI Marketing Benchmark database please raise an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) to let me know.
 
 ### Preliminary Results
-These results are from an initial test run of the benchmarks performed on **9th June 2024** with Claude 3.5 Sonnet added on **20th June 2024**:<br>
+These results are from a test run of the benchmarks performed on **23rd June 2024**:<br>
 
-| Provider | Model           | TOTAL↓ | AV     | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO   | Web Analytics | eCommerce |
-|----------|-----------------|--------|--------|--------|------------|-------|--------|----------------|-------------------------|---------|-------------|-------------|------------------|--------------|------------|-------|---------------|-----------|
-| Anthropic| Claude-3.5 Sonnet|**83.8%**| 66.7%| 86.0%  | 93.1%      | 55.0% | 68.4%  | 85.1%          |**89.9%**                | 70.0%   | 85.0%       |**79.7%**    | 88.0%            | 74.1%        | 52.0%      |**88.6%**| 80.0%       | 97.0%     |
-| Anthropic| Claude-3 Opus   | 83.0%  | 73.3% | 90.0%  | 93.1%      | 60.0% | 68.4%  |**85.6%**       | 85.9%                   | 70.0%   |**85.6%**    | 74.2%       | 86.0%            |**77.0%**     | 60.0%      | 86.0% | 78.3%         | 97.0%     |
-| OpenAI   | GPT-4o          | 81.9%  | 63.3%  | 88.0%  |**96.6%**   | 45.0% |**73.7%**| 84.1%         | 83.8%                   | 75.0%   | 82.4%       | 72.5%       |**92.0%**         | 73.5%        | 64.0%      | 86.0% |**83.3%**      |**100.0%** |
-| OpenAI   | GPT-4 Turbo     | 81.0%  | 70.0%  |**94.0%**| 93.1%     | 40.0% | 68.4%  | 81.3%          | 75.8%                   | 65.0%   | 82.2%       | 72.0%       | 86.0%            | 71.7%        | 60.0%      | 88.3% | 75.0%         | 98.5%     |
-| Google   | Gemini-1.5 Pro  | 80.7%  | 66.7%  | 80.0%  |**96.6%**   | 60.0% | 57.9%  | 79.4%          | 85.9%                   | 65.0%   | 81.6%       | 73.6%       | 84.0%            | 74.1%        |**72.0%**   | 84.3% | 78.3%         |**100.0%** |
-| Meta     | Llama-3 70B     | 79.8%  | 63.3%  | 90.0%  |**96.6%**   | 60.0% | 52.6%  | 84.11%         | 76.8%                   |**85.0%**| 79.6%       | 71.4%       | 90.0%            | 69.0%        | 52.0%      | 86.0% | 75.0%         | 95.5%     |
-| Anthropic| Claude-3 Sonnet | 76.4%  | 66.7%  | 76.0%  | 75.9%      | 45.0% | 42.1%  | 80.4%          | 74.8%                   | 65.0%   | 77.1%       | 73.6%       | 84.0%            | 68.1%        | 48.0%      | 81.0% | 75.0%         | 98.5%     |
-| Anthropic| Claude-3 Haiku  | 76.3%  |**76.7%**| 78.0% | 86.2%      | 40.0% | 57.9%  | 81.3%          | 81.8%                   | 70.0%   | 72.8%       | 73.1%       | 80.0%            | 68.1%        | 56.0%      | 81.0% | 68.3%         | 98.5%     |
-| Mistral  | Mixtral-8x22B   | 74.2%  | 60.0%  | 88.0%  | 89.7%      | 40.0% | 47.4%  | 79.4%          | 73.7%                   | 60.0%   | 70.5%       | 66.5%       | 80.0%            | 71.7%        | 48.0%      | 79.7% | 65.0%         | 97.0%     |
-| OpenAI   | GPT-3.5 Turbo   | 74.2%  | 56.7%  | 84.0%  | 89.7%      | 40.0% | 52.6%  | 78.5%          | 68.7%                   | 50.0%   | 73.1%       | 68.1%       | 80.0%            | 63.7%        | 60.0%      | 81.2% | 70.0%         | 95.5%     |
-| Google   | Gemini-1.5 Flash| 73.5%  | 66.7%  | 70.0%  | 82.8%      | 35.0% | 42.1%  | 75.7%          | 73.7%                   | 50.0%   | 73.4%       | 66.5%       | 82.0%            | 62.8%        | 56.0%      | 80.5% | 71.7%         | 98.5%     |
-| Meta     | Llama-2 70B     | 71.7%  | 60.0%  | 82.0%  | 86.2%      | 20.0% | 63.2%  | 76.6%          | 77.8%                   | 60.0%   | 73.7%       | 64.3%       | 80.0%            | 58.0%        | 48.0%      | 75.4% | 60.0%         | 92.4%     |
-| Mistral  | Mixtral-8x7B    | 70.8%  | 60.0%  | 52.0%  | 62.1%      |**65.0%**| 47.4%| 70.1%          | 68.7%                   | 50.0%   | 71.1%       | 64.8%       | 82.0%            | 68.1%        | 40.0%      | 77.2% | 65.0%         | 95.5%     |
-| Meta     | Llama-3 8B      | 70.8%  | 56.7%  | 66.0%  | 79.3%      | 40.0% | 52.6%  | 72.0%          | 72.7%                   | 75.0%   | 69.4%       | 65.4%       | 82.0%            | 61.1%        | 40.0%      | 76.9% | 65.0%         | 97.0%     |
-| Mistral  | Mixtral-7B      | 68.3%  | 56.7%  | 62.0%  | 79.3%      | 40.0% | 47.4%  | 70.1%          | 63.6%                   | 45.0%   | 65.2%       | 62.6%       | 88.0%            | 62.0%        | 64.0%      | 75.9% | 65.0%         | 89.4%     |
-| Meta     | Llama-2 7B*     | 58.2%  | 56.7%  | 64.0%  | 65.5%      | 25.0% | 52.6%  | 68.2%          | 71.7%                   | 60.0%   | 55.2%       | 55.5%       | 74.0%            | 46.0%        | 32.0%      | 58.4% | 55.0%         | 69.7%     |
-| Google   | Gemini-1.0 Pro* | 47.3%  | 50.0%  | 60.0%  | 65.5%      | 40.0% | 21.1%  | 32.7%          | 37.4%                   | 25.0%   | 45.6%       | 41.8%       | 54.0%            | 40.2%        | 24.0%      | 59.4% | 38.3%         | 59.1%     |
-
-*some models have lower scores as they were sometimes unable to follow the prompt instructions and just return a single letter answer, despite given 3 additional opportunities to do so on each question where it didn't return a single letter answer.
+| Provider | Model | TOTAL↓ | AV | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO | Web Analytics | eCommerce | Content Marketing | Influencer Marketing | Market Research & Insights |
+| -------- | ----- | ------ | -- | ------ | ---------- | ----- | ------ | -------------- | ----------------------- | ------- | ----------- | ----------- | ---------------- | ------------ | ---------- | --- | ------------- | --------- | ----------------- | -------------------- | -------------------------- |
+| Anthropic | Claude-3.5 Sonnet | **80.1%** | 72.8% | 88.0% | 93.1% | 72.3% | **65.8%** | **89.0%** | **87.2%** | 59.0% | **85.3%** | **79.6%** | 87.8% | **74.8%** | 43.6% | 86.6% | **81.7%** | **87.1%** | 98.3% | 90.0% | 90.0% |
+| OpenAI | GPT-4o | 78.1% | 70.8% | 92.0% | 93.1% | **73.5%** | 50.0% | **89.0%** | 81.7% | 55.8% | 82.7% | 76.2% | **93.9%** | 73.9% | 50.5% | 86.4% | **81.7%** | 83.5% | 98.3% | **100.0%** | 90.0% |
+| OpenAI | GPT-4 Turbo | 77.3% | **73.3%** | 86.0% | 89.7% | 71.7% | 52.0% | 83.5% | 77.4% | **62.1%** | 80.4% | 77.4% | 87.8% | 70.3% | **57.4%** | **87.2%** | 70.0% | 80.0% | 98.3% | 90.0% | **95.0%** |
+| Anthropic | Claude-3 Opus | 77.1% | 70.8% | 84.0% | 86.2% | 65.7% | 52.5% | **89.0%** | 83.5% | 59.0% | 83.6% | 75.7% | 89.8% | 73.0% | 47.5% | 85.4% | 76.7% | 82.4% | **100.0%** | 85.0% | **95.0%** |
+| Meta | Llama-3 70B | 77.0% | 71.4% | **96.0%** | **96.6%** | 70.5% | 56.9% | 85.0% | 78.7% | 60.0% | 80.6% | 72.9% | 89.8% | 69.4% | 47.5% | 85.1% | 76.7% | 82.4% | 93.3% | 85.0% | **95.0%** |
+| Google | Gemini-1.5 Pro | 76.4% | 69.9% | 86.0% | 93.1% | 68.1% | 53.0% | 81.9% | 81.1% | 59.0% | 80.9% | 74.0% | 87.8% | **74.8%** | 44.6% | 84.8% | 76.7% | 84.7% | 98.3% | 90.0% | 90.0% |
+| Anthropic | Claude-3 Sonnet | 74.0% | 67.4% | 74.0% | 79.3% | 63.9% | 47.0% | 85.8% | 77.4% | 56.8% | 79.5% | 76.2% | 81.6% | 70.3% | 44.6% | 81.2% | 76.7% | 84.7% | **100.0%** | 95.0% | 90.0% |
+| Anthropic | Claude-3 Haiku | 73.9% | 66.6% | 86.0% | 89.7% | 63.9% | 56.4% | 81.9% | 76.2% | 55.8% | 76.8% | 71.8% | 77.6% | 71.2% | 48.5% | 82.3% | 70.0% | 81.2% | 98.3% | 85.0% | **95.0%** |
+| Mistral | Mixtral-8x22B | 71.6% | 66.6% | 90.0% | 93.1% | 63.2% | 32.7% | 81.1% | 72.6% | 56.8% | 72.7% | 70.2% | 85.7% | 72.1% | 38.6% | 83.0% | 80.0% | 78.8% | 96.7% | 90.0% | 90.0% |
+| Google | Gemini-1.5 Flash | 70.2% | 64.9% | 84.0% | 93.1% | 57.8% | 41.1% | 78.0% | 72.0% | 53.7% | 76.0% | 64.1% | 83.7% | 68.5% | 38.6% | 79.2% | 66.7% | 82.4% | 93.3% | 90.0% | **95.0%** |
+| Mistral | Mixtral-8x7B | 70.2% | 65.7% | 56.0% | 65.5% | 62.0% | 43.1% | 80.3% | 73.2% | 51.6% | 74.5% | 66.8% | 83.7% | 67.6% | 31.7% | 79.4% | 78.3% | 81.2% | 96.7% | 95.0% | 85.0% |
+| Meta | Llama-3 8B | 69.3% | 61.2% | 72.0% | 93.1% | 57.2% | 45.5% | 74.8% | 72.0% | 57.9% | 73.9% | 68.5% | 83.7% | 66.7% | 37.6% | 77.4% | 66.7% | 81.2% | 91.7% | 90.0% | 90.0% |
 
 ## PHASE TWO - Testing Marketing Understanding
 
