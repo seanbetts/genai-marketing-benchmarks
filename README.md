@@ -82,7 +82,7 @@ These results are from a test run of the benchmarks performed on **23rd June 202
 | Mistral | Mixtral-8x7B | 70.2% | 65.7% | 56.0% | 65.5% | 62.0% | 43.1% | 80.3% | 73.2% | 51.6% | 74.5% | 66.8% | 83.7% | 67.6% | 31.7% | 79.4% | 78.3% | 81.2% | 96.7% | 95.0% | 85.0% |
 | Meta | Llama-3 8B | 69.3% | 61.2% | 72.0% | 93.1% | 57.2% | 45.5% | 74.8% | 72.0% | 57.9% | 73.9% | 68.5% | 83.7% | 66.7% | 37.6% | 77.4% | 66.7% | 81.2% | 91.7% | 90.0% | 90.0% |
 
-*These categories of marketing have less than 100 multiple-choice questions in the benchmarking test, so don't provide as robust an evaluation as I would like. The scores in these categories should not be taken as definitive.
+*These marketing categories have less than 100 multiple-choice questions in the benchmarking test, so don't provide as robust an evaluation as I would like. The scores in these categories should not be taken as definitive.
 
 ## PHASE TWO - Testing Marketing Understanding
 
