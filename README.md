@@ -38,7 +38,7 @@ Some of these questions are UK-centric and have a bias towards the UK marketing 
 ### Status: PROOF OF CONCEPT
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
-The database of marketing questions currently contains **2,800++** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
+The database of marketing questions currently contains **2,800+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
 
 ### More Questions Required
 As of **23rd June 2024**, the project has a low number of questions for the following marketing discilpines and requires more adding to make the benchmark scores more robust:
