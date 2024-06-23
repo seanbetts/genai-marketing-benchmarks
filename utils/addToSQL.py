@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 
 # Load data from Excel file
-file_path = '../Test_Questions.xlsx'
+file_path = '../../Test_Questions.xlsx'
 df = pd.read_excel(file_path)
 
 # Sanitize column names
@@ -12,7 +12,7 @@ df.columns = [col.replace(' ', '_').replace('-', '_') for col in df.columns]
 df = df.astype(str)
 
 # Connect to SQLite database
-conn = sqlite3.connect('../results_database.sqlite')
+conn = sqlite3.connect('../../results_database.sqlite')
 cursor = conn.cursor()
 
 # Define table name
