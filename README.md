@@ -35,7 +35,7 @@ I'd like to thank the following organisations for supporting the project by prov
 
 Some of these questions are UK-centric and have a bias towards the UK marketing industry. Many of the questions are globally applicable though.
 
-### Status: PROOF OF CONCEPT
+### Status: MINIMAL VIABLE PRODUCT
 Collect and create a bank of multiple-choice questions across the breadth and depth of marketing that can be used to test the marketing **knowledge** of LLMs. The LLMs responses to these multiple-choice questions will be scored on whether they get the right answer or not.
 
 The database of marketing questions currently contains **2,800+** multiple-choice questions to test the marketing knowledge of generative AI models. The questions are currently focused around Comms Planning, Marketing Effectiveness and Media. The question bank needs broadening out to include all marketing disciplines.
@@ -67,7 +67,7 @@ If there are other marketing disciplines that you think should be represented in
 ### Preliminary Results
 These results are from a test run of the benchmarks performed on **23rd June 2024**:<br>
 
-| Provider | Model | TOTAL↓ | AV | Ad Ops | Affiliates | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor | Paid Search | Paid Social | Privacy & Ethics | Programmatic | Publishing | SEO | Web Analytics | eCommerce | Content Marketing | Influencer Marketing | Market Research & Insights |
+| Provider | Model | TOTAL↓ | AV | Ad Ops* | Affiliates* | Audio | Cinema | Comms Planning | Marketing Effectiveness | Outdoor* | Paid Search | Paid Social | Privacy & Ethics* | Programmatic | Publishing* | SEO | Web Analytics* | eCommerce* | Content Marketing* | Influencer Marketing* | Market Research & Insights* |
 | -------- | ----- | ------ | -- | ------ | ---------- | ----- | ------ | -------------- | ----------------------- | ------- | ----------- | ----------- | ---------------- | ------------ | ---------- | --- | ------------- | --------- | ----------------- | -------------------- | -------------------------- |
 | Anthropic | Claude-3.5 Sonnet | **80.1%** | 72.8% | 88.0% | 93.1% | 72.3% | **65.8%** | **89.0%** | **87.2%** | 59.0% | **85.3%** | **79.6%** | 87.8% | **74.8%** | 43.6% | 86.6% | **81.7%** | **87.1%** | 98.3% | 90.0% | 90.0% |
 | OpenAI | GPT-4o | 78.1% | 70.8% | 92.0% | 93.1% | **73.5%** | 50.0% | **89.0%** | 81.7% | 55.8% | 82.7% | 76.2% | **93.9%** | 73.9% | 50.5% | 86.4% | **81.7%** | 83.5% | 98.3% | **100.0%** | 90.0% |
@@ -81,6 +81,8 @@ These results are from a test run of the benchmarks performed on **23rd June 202
 | Google | Gemini-1.5 Flash | 70.2% | 64.9% | 84.0% | 93.1% | 57.8% | 41.1% | 78.0% | 72.0% | 53.7% | 76.0% | 64.1% | 83.7% | 68.5% | 38.6% | 79.2% | 66.7% | 82.4% | 93.3% | 90.0% | **95.0%** |
 | Mistral | Mixtral-8x7B | 70.2% | 65.7% | 56.0% | 65.5% | 62.0% | 43.1% | 80.3% | 73.2% | 51.6% | 74.5% | 66.8% | 83.7% | 67.6% | 31.7% | 79.4% | 78.3% | 81.2% | 96.7% | 95.0% | 85.0% |
 | Meta | Llama-3 8B | 69.3% | 61.2% | 72.0% | 93.1% | 57.2% | 45.5% | 74.8% | 72.0% | 57.9% | 73.9% | 68.5% | 83.7% | 66.7% | 37.6% | 77.4% | 66.7% | 81.2% | 91.7% | 90.0% | 90.0% |
+
+*These categories of marketing have less than 100 multiple-choice questions in the benchmarking test, so don't provide as robust an evaluation as I would like. The scores in these categories should not be taken as definitive.
 
 ## PHASE TWO - Testing Marketing Understanding
 
