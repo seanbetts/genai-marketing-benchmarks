@@ -51,7 +51,7 @@ As of **23rd June 2024**, the project has a low number of questions for the foll
 - Privacy & Ethics
 - Affiliates
 - Market Research & Insights
-- Influecer Marketing
+- Influencer Marketing
 
 ### Missing Quesitons
 As of **23rd June 2024**, the project is missing multiple-choice questions from the following marketing discilpines:
