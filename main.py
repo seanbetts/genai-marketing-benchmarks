@@ -11,7 +11,7 @@ import logging
 from src.api_calls import query_language_model
 from src.data_processing import load_questions, save_results_to_sqlite, calculate_token_cost, estimate_cost, answer_check
 from src.user_interface import select_models, select_categories, get_user_inputs, confirm_run
-from src.logger import setup_logger
+from src.logger import setup_logger, get_logger
 
 
 # Define LLMs
@@ -40,7 +40,8 @@ llms = [
 def main():
     # Set up logger
     base_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    logger = setup_logger(base_folder)
+    setup_logger(base_folder)
+    logger = get_logger()
 
     # Set logging level to INFO for all loggers
     logging.getLogger().setLevel(logging.INFO)
@@ -120,7 +121,7 @@ def main():
                 # If the answer is not valid, retry (you might want to limit the number of retries)
                 retry_count = 3
                 while not is_valid and retry_count > 0:
-                    logger.info(f"Invalid answer, retrying. Attempts left: {retry_count}")
+                    logger.warning(f"Invalid answer, retrying. Attempts left: {retry_count}")
                     answer, prompt_tokens, completion_tokens = query_language_model(
                         model_info['provider'],
                         model_info['variant'],
@@ -132,25 +133,31 @@ def main():
                     retry_count -= 1
 
                 if not is_valid:
-                    logger.error(f"Failed to get a valid answer after retries. Setting answer to None")
-                    cleaned_answer = "None"
+                    logger.error(f"Failed to get a valid answer after retries. Skipping this question.")
                     continue
 
                 # Process the result
                 is_correct = cleaned_answer == question['Correct_Option']
                 cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
 
-                logger.info(f"Answer: {cleaned_answer}")
-                logger.info(f"Question {index + 1} result: {is_correct}")
+                logger.info(f"Final answer: {cleaned_answer}")
+                logger.info(f"Question {index + 1} result: Correct: {is_correct}")
 
                 # Store the result
                 results.append({
                     'Round': iteration + 1,
+                    'Discipline': question['Discipline'],
+                    'Category': question['Category'],
+                    'Sub_Category': question.get('Sub_Category'),
+                    'Question_Code': question['Question_Code'],
                     'Question': question['Question'],
-                    'Correct_Answer': question['Correct_Option'],
+                    'Correct_Option': question['Correct_Option'],
+                    'Provider': model_info['provider'],
+                    'Model': model_info['name'],
                     'Model_Answer': cleaned_answer,
                     'Is_Correct': is_correct,
-                    'Cost': cost
+                    'Cost': cost,
+                    'Timestamp': datetime.now()
                 })
 
             # Save results
@@ -161,7 +168,6 @@ def main():
         logger.info(f"Completed all rounds for model: {model_info['name']}")
 
     logger.info("Testing completed successfully")
-    print("Testing completed successfully.")
 
 if __name__ == "__main__":
     main()

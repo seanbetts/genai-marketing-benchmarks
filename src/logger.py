@@ -17,7 +17,7 @@ def setup_logger(base_folder):
     log_file = os.path.join(today_logs_folder, f"run_{current_time}.log")
 
     # Create and configure logger
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
     # Create handlers
@@ -34,3 +34,7 @@ def setup_logger(base_folder):
     logger.addHandler(console_handler)
 
     return logger
+
+# This function can be called to get a logger for any module
+def get_logger():
+    return logging.getLogger()
