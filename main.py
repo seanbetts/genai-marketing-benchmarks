@@ -9,7 +9,10 @@ import pandas as pd
 
 from src.constants import MODELS, DATE_FORMAT, TIME_FORMAT, BASE_FOLDER, PROMPT_TEMPLATE
 from src.api_calls import query_language_model
-from src.data_processing import load_questions, save_results_to_sqlite, calculate_token_cost, estimate_cost, answer_check
+from src.data_processing import (
+    load_questions, save_results_to_sqlite, calculate_token_cost, 
+    estimate_cost, answer_check, check_table_exists_and_get_highest_round
+)
 from src.user_interface import select_models, select_categories, get_user_inputs, confirm_run
 from src.logger import setup_logger, get_logger
 
@@ -67,8 +70,13 @@ def main():
     # Main testing loop
     for model_info in selected_models:
         logger.info(f"Starting tests for model: {model_info['name']}")
-        for iteration in range(num_rounds):
-            logger.info(f"Starting round {iteration + 1} for {model_info['name']}")
+
+        # Check for existing rounds and get the highest round number
+        highest_round = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
+        start_round = highest_round + 1
+
+        for iteration in range(start_round, start_round + num_rounds):
+            logger.info(f"Starting round {iteration} for {model_info['name']}")
             results = []
             questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(num_questions, total_questions))
             for index, question in questions_to_test.iterrows():
@@ -122,7 +130,7 @@ def main():
 
                 # Store the result
                 results.append({
-                    'Round': iteration + 1,
+                    'Round': iteration,
                     'Discipline': question['Discipline'],
                     'Category': question['Category'],
                     'Sub_Category': question.get('Sub_Category'),
@@ -138,7 +146,7 @@ def main():
                 })
 
             # Save results
-            logger.info(f"Saving results for round {iteration + 1}")
+            logger.info(f"Saving results for round {iteration }")
             results_df = pd.DataFrame(results)
             save_results_to_sqlite(results_df, model_info['variant'], BASE_FOLDER, today_date, current_time)
 

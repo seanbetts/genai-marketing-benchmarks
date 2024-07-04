@@ -1,7 +1,6 @@
 import pandas as pd
 import sqlite3
 import os
-from datetime import datetime
 import re
 from src.logger import get_logger
 from src.constants import DATABASE_PATH, VALID_ANSWERS
@@ -93,6 +92,43 @@ def answer_check(answer):
     
     return answer, is_valid
 
+def check_table_exists_and_get_highest_round(model_variant, today_date):
+    """
+    Check if a table exists for the given model and date, and get the highest round number.
+    
+    Args:
+    model_variant (str): The variant of the model being tested
+    today_date (str): The current date in 'YYYY-MM-DD' format
+    
+    Returns:
+    int: The highest round number for the day, or 0 if the table doesn't exist
+    """
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+    
+    model_cleaned = model_variant.split('/')[-1]
+    table_name = f"{today_date}_{model_cleaned}".replace('-', '_').replace(':', '_').replace(' ', '_').replace('.', '_')
+    
+    logger.info(f"Checking for existing table: {table_name}")
+    
+    cursor.execute(f'SELECT name FROM sqlite_master WHERE type="table" AND name="{table_name}";')
+    table_exists = cursor.fetchone()
+    
+    highest_round = 0
+    if table_exists:
+        logger.info(f"Table {table_name} exists, retrieving highest round number")
+        # Table exists, retrieve the highest round number
+        cursor.execute(f'SELECT MAX("Round") FROM "{table_name}";')
+        result = cursor.fetchone()
+        highest_round = result[0] if result[0] is not None else 0
+    else:
+        logger.info(f"Table {table_name} does not exist")
+    
+    conn.close()
+    
+    logger.info(f"Highest round number for {model_variant} on {today_date}: {highest_round}")
+    return highest_round
+
 def sanitize_column_name(col_name):
     return re.sub(r'[^a-zA-Z0-9_]', '_', col_name)
 
@@ -108,8 +144,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     current_time (str): Current time
     """
     logger.info(f"Saving results for model {model} to SQLite database")
-    db_path = os.path.join(base_folder, 'results_database.sqlite')
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     
     model_cleaned = model.split('/')[-1]

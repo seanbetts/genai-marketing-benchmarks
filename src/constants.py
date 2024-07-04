@@ -2,6 +2,7 @@ import os
 
 # Database
 DATABASE_NAME = 'results_database.sqlite'
+DATABASE_FOLDER = 'Database'
 
 # Date and time formats
 DATE_FORMAT = '%Y-%m-%d'
@@ -13,7 +14,7 @@ BASE_FOLDER = os.path.dirname(SCRIPTS_FOLDER)
 LOGS_FOLDER = os.path.join(BASE_FOLDER, 'Logs')
 
 # Database path
-DATABASE_PATH = os.path.join(BASE_FOLDER, DATABASE_NAME)
+DATABASE_PATH = os.path.join(BASE_FOLDER, DATABASE_FOLDER, DATABASE_NAME)
 
 # API related
 PROJECT_ID = "gen-lang-client-0130870695"
