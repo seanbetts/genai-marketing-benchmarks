@@ -66,6 +66,33 @@ def load_questions(db_path, table_name='questions'):
     conn.close()
     return df
 
+def answer_check(answer):
+    """
+    Check if the answer is valid.
+    
+    Args:
+    answer (str): The answer to check
+    
+    Returns:
+    tuple: (cleaned_answer, is_valid)
+    """
+    logger.info(f"Checking answer: {answer}")
+    valid_answers = ['A', 'B', 'C', 'D']
+    answer = answer.upper().strip()
+    if answer.startswith(('##', '**')):
+        answer = answer[2:].strip()  # Remove '##' or '**' and strip any leading/trailing spaces
+    elif answer.startswith(('#', '*')):
+        answer = answer[1:].strip()  # Remove '#' or '*' and strip any leading/trailing spaces
+    answer = answer[0] if answer else ''  # Keep only the first character if it exists
+    
+    is_valid = answer in valid_answers
+    if not is_valid:
+        logger.warning(f"Invalid answer received: {answer}")
+    else:
+        logger.info(f"Valid answer: {answer}")
+    
+    return answer, is_valid
+
 def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date, current_time):
     """
     Save results to SQLite database.
@@ -88,7 +115,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     # Calculate and save summary data
     round_number = int(iteration_results_df['Round'].iloc[0])
     total_questions = len(iteration_results_df)
-    correct_answers = iteration_results_df['Correct'].sum()
+    correct_answers = iteration_results_df['Is_Correct'].sum()
     percentage_correct = round((correct_answers / total_questions) * 100, 2)
     
     summary_data = {

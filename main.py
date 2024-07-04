@@ -5,9 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from datetime import datetime
+import pandas as pd
+import logging
 
 from src.api_calls import query_language_model
-from src.data_processing import load_questions, save_results_to_sqlite, calculate_token_cost, estimate_cost
+from src.data_processing import load_questions, save_results_to_sqlite, calculate_token_cost, estimate_cost, answer_check
 from src.user_interface import select_models, select_categories, get_user_inputs, confirm_run
 from src.logger import setup_logger
 
@@ -39,6 +41,9 @@ def main():
     # Set up logger
     base_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     logger = setup_logger(base_folder)
+
+    # Set logging level to INFO for all loggers
+    logging.getLogger().setLevel(logging.INFO)
 
     logger.info("Starting the GenAI Marketing Benchmarks script")
 
@@ -107,11 +112,35 @@ def main():
                     prompt
                 )
 
+                # Check the answer
+                logger.info(f"Raw answer from model: {answer}")
+                cleaned_answer, is_valid = answer_check(answer)
+                logger.info(f"Cleaned answer: {cleaned_answer}, Is valid: {is_valid}")
+
+                # If the answer is not valid, retry (you might want to limit the number of retries)
+                retry_count = 3
+                while not is_valid and retry_count > 0:
+                    logger.info(f"Invalid answer, retrying. Attempts left: {retry_count}")
+                    answer, prompt_tokens, completion_tokens = query_language_model(
+                        model_info['provider'],
+                        model_info['variant'],
+                        prompt
+                    )
+                    logger.info(f"Raw answer from model (retry): {answer}")
+                    cleaned_answer, is_valid = answer_check(answer)
+                    logger.info(f"Cleaned answer (retry): {cleaned_answer}, Is valid: {is_valid}")
+                    retry_count -= 1
+
+                if not is_valid:
+                    logger.error(f"Failed to get a valid answer after retries. Setting answer to None")
+                    cleaned_answer = "None"
+                    continue
+
                 # Process the result
-                is_correct = answer == question['Correct_Option']
+                is_correct = cleaned_answer == question['Correct_Option']
                 cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
 
-                logger.info(f"Answer: {answer}")
+                logger.info(f"Answer: {cleaned_answer}")
                 logger.info(f"Question {index + 1} result: {is_correct}")
 
                 # Store the result
@@ -119,7 +148,7 @@ def main():
                     'Round': iteration + 1,
                     'Question': question['Question'],
                     'Correct_Answer': question['Correct_Option'],
-                    'Model_Answer': answer,
+                    'Model_Answer': cleaned_answer,
                     'Is_Correct': is_correct,
                     'Cost': cost
                 })
