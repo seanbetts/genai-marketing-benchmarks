@@ -6,7 +6,7 @@ from typing import Dict, Any
 SCRIPTS_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_FOLDER = os.path.dirname(SCRIPTS_FOLDER)
 LOGS_FOLDER = os.path.join(BASE_FOLDER, 'Logs')
-CONFIG_PATH = os.path.join(BASE_FOLDER, 'config.yaml')
+CONFIG_PATH = os.path.join(SCRIPTS_FOLDER, 'config.yaml')
 
 # Load configuration
 with open(CONFIG_PATH, 'r') as config_file:

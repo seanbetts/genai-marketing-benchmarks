@@ -3,10 +3,26 @@ database:
   name: 'results_database.sqlite'
   folder: 'Database'
 
-# API settings
+# Vertex API settings
 api:
   project_id: "gen-lang-client-0130870695"
   location: "europe-west2"
+
+# Prompt template
+prompt_template: |
+  Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice. DO NOT give an explanation.
+
+  Question: {question}
+  Choices:
+  A. {option_a}
+  B. {option_b}
+  C. {option_c}
+  D. {option_d}
+  Answer:
+
+# Other settings
+max_retries: 3
+valid_answers: ['A', 'B', 'C', 'D']
 
 # Model definitions
 models:
@@ -105,19 +121,3 @@ models:
     provider: "Mistral"
     prompt: 0.0000012
     completion: 0.0000012
-
-# Other settings
-max_retries: 3
-valid_answers: ['A', 'B', 'C', 'D']
-
-# Prompt template
-prompt_template: |
-  Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice. DO NOT give an explanation.
-
-  Question: {question}
-  Choices:
-  A. {option_a}
-  B. {option_b}
-  C. {option_c}
-  D. {option_d}
-  Answer:
