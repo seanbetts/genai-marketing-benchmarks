@@ -2,17 +2,19 @@ import pandas as pd
 import sqlite3
 import os
 import re
+from typing import Tuple, List, Dict, Any, Optional
+
 from src.logger import get_logger
 from src.constants import DATABASE_PATH, VALID_ANSWERS
 
 logger = get_logger()
 
-def estimate_cost(num_questions, num_rounds, selected_models, avg_prompt_tokens=70, avg_completion_tokens=1):
+def estimate_cost(num_questions: int, num_rounds: int, selected_models: List[Dict[str, Any]], avg_prompt_tokens: int = 70, avg_completion_tokens: int = 1) -> Tuple[float, List[Tuple[str, float]]]:
     """
     Estimate the cost of running the tests.
     
     Args:
-    num_questions (int or str): Number of questions per round ('all' or int)
+    num_questions (int): Number of questions per round ('all' or int)
     num_rounds (int): Number of rounds to run
     selected_models (list): List of selected model dictionaries
     avg_prompt_tokens (int): Average number of tokens in a prompt
@@ -47,14 +49,14 @@ def estimate_cost(num_questions, num_rounds, selected_models, avg_prompt_tokens=
     logger.info(f"Total estimated cost: ${total_cost:.3f}")
     return total_cost, model_costs
 
-def calculate_token_cost(prompt_tokens, completion_tokens, model_info):
+def calculate_token_cost(prompt_tokens: int, completion_tokens: int, model_info: Dict[str, Any]) -> float:
     """
     Calculate the cost of tokens used.
     
     Args:
     prompt_tokens (int): Number of tokens in the prompt
     completion_tokens (int): Number of tokens in the completion
-    model_info (dict): Dictionary containing model information including pricing
+    model_info (Dict[str, Any]): Dictionary containing model information including pricing
     
     Returns:
     float: Total cost
@@ -63,8 +65,16 @@ def calculate_token_cost(prompt_tokens, completion_tokens, model_info):
     completion_cost = completion_tokens * model_info["completion"]
     return prompt_cost + completion_cost
 
-def load_questions(table_name='questions'):
-    """Load questions from the SQLite database."""
+def load_questions(table_name: str ='questions') -> pd.DataFrame:
+    """
+    Load questions from the SQLite database.
+    
+    Args:
+    table_name (str): Name of the table containing questions
+    
+    Returns:
+    pd.DataFrame: Dataframe containing the questions
+    """
     if not os.path.exists(DATABASE_PATH):
         raise FileNotFoundError(f"Database file not found at path: {DATABASE_PATH}")
     
@@ -74,8 +84,16 @@ def load_questions(table_name='questions'):
     conn.close()
     return df
 
-def answer_check(answer):
-    """Check if the answer is valid."""
+def answer_check(answer: str) -> Tuple[str, bool]:
+    """
+    Check if the answer is valid.
+    
+    Args:
+    answer (str): The answer to check
+    
+    Returns:
+    Tuple[str, bool]: Cleaned answer and whether it's valid
+    """
     logger.info(f"Checking answer: {answer}")
     answer = answer.upper().strip()
     if answer.startswith(('##', '**')):
@@ -92,7 +110,7 @@ def answer_check(answer):
     
     return answer, is_valid
 
-def check_table_exists_and_get_highest_round(model_variant, today_date):
+def check_table_exists_and_get_highest_round(model_variant: str, today_date: str) -> int:
     """
     Check if a table exists for the given model and date, and get the highest round number.
     
@@ -129,10 +147,10 @@ def check_table_exists_and_get_highest_round(model_variant, today_date):
     logger.info(f"Highest round number for {model_variant} on {today_date}: {highest_round}")
     return highest_round
 
-def sanitize_column_name(col_name):
+def sanitize_column_name(col_name: str) -> str:
     return re.sub(r'[^a-zA-Z0-9_]', '_', col_name)
 
-def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date, current_time):
+def save_results_to_sqlite(iteration_results_df: pd.DataFrame, model: str, today_date: str) -> None:
     """
     Save results to SQLite database.
     
@@ -141,7 +159,6 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
     model (str): Name of the model used
     base_folder (str): Base folder path
     today_date (str): Current date
-    current_time (str): Current time
     """
     logger.info(f"Saving results for model {model} to SQLite database")
     conn = sqlite3.connect(DATABASE_PATH)
@@ -227,7 +244,7 @@ def save_results_to_sqlite(iteration_results_df, model, base_folder, today_date,
 
     logger.info(f"Results saved to database successfully in table {table_name}. Overall percentage correct: {percentage_correct}%")
 
-def get_sqlite_type(dtype):
+def get_sqlite_type(dtype: Any) -> str:
     if dtype == 'int64':
         return 'INTEGER'
     elif dtype == 'float64':
@@ -235,7 +252,7 @@ def get_sqlite_type(dtype):
     else:
         return 'TEXT'
 
-def ensure_summary_table(conn, table_name, columns):
+def ensure_summary_table(conn: sqlite3.Connection, table_name: str, columns: pd.Index) -> None:
     cursor = conn.cursor()
     cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (Model TEXT, Round INTEGER, Date TEXT)")
     cursor.execute(f"PRAGMA table_info({table_name})")

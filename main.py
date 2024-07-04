@@ -1,13 +1,13 @@
 import os
 from dotenv import load_dotenv
+from typing import List, Dict, Any
+from datetime import datetime
+import pandas as pd
 
 # Load environment variables
 load_dotenv()
 
-from datetime import datetime
-import pandas as pd
-
-from src.constants import MODELS, DATE_FORMAT, TIME_FORMAT, BASE_FOLDER, PROMPT_TEMPLATE
+from src.constants import MODELS, DATE_FORMAT, TIME_FORMAT, BASE_FOLDER, PROMPT_TEMPLATE, MAX_RETRIES
 from src.api_calls import query_language_model
 from src.data_processing import (
     load_questions, save_results_to_sqlite, calculate_token_cost, 
@@ -16,7 +16,7 @@ from src.data_processing import (
 from src.user_interface import select_models, select_categories, get_user_inputs, confirm_run
 from src.logger import setup_logger, get_logger
 
-def main():
+def main() -> None:
     # Set up logger
     setup_logger(BASE_FOLDER)
     logger = get_logger()
@@ -24,17 +24,16 @@ def main():
     logger.info("Starting the GenAI Marketing Benchmarks script")
 
     # Get current date and time
-    today_date = datetime.today().strftime(DATE_FORMAT)
-    current_time = datetime.now().strftime(TIME_FORMAT)
+    today_date: str = datetime.today().strftime(DATE_FORMAT)
 
     # Select models
     logger.info("Prompting user to select models")
-    selected_models = select_models(MODELS)
+    selected_models: List[Dict[str, Any]] = select_models(MODELS)
     logger.info(f"Selected models: {[model['name'] for model in selected_models]}")
 
     # Load questions
     logger.info("Loading questions from database")
-    questions_df = load_questions()
+    questions_df: pd.DataFrame = load_questions()
     logger.info(f"Loaded {len(questions_df)} questions from database")
 
     # Select categories
@@ -53,7 +52,7 @@ def main():
     logger.info(f"User input: {num_questions} questions, {num_rounds} rounds")
 
     # Calculate total available questions
-    total_questions = len(filtered_df)
+    total_questions: int = len(filtered_df)
 
     # Calculate estimated cost
     questions_per_round = total_questions if num_questions == 'all' else min(int(num_questions), total_questions)
@@ -72,12 +71,12 @@ def main():
         logger.info(f"Starting tests for model: {model_info['name']}")
 
         # Check for existing rounds and get the highest round number
-        highest_round = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
-        start_round = highest_round + 1
+        highest_round: int = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
+        start_round: int = highest_round + 1
 
         for iteration in range(start_round, start_round + num_rounds):
             logger.info(f"Starting round {iteration} for {model_info['name']}")
-            results = []
+            results: List[Dict[str, Any]] = []
             questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(num_questions, total_questions))
             for index, question in questions_to_test.iterrows():
                 logger.info(f"Processing question {index + 1}")
@@ -104,7 +103,7 @@ def main():
                 logger.info(f"Cleaned answer: {cleaned_answer}, Is valid: {is_valid}")
 
                 # If the answer is not valid, retry (you might want to limit the number of retries)
-                retry_count = 3
+                retry_count: int = MAX_RETRIES
                 while not is_valid and retry_count > 0:
                     logger.warning(f"Invalid answer, retrying. Attempts left: {retry_count}")
                     answer, prompt_tokens, completion_tokens = query_language_model(
@@ -122,8 +121,8 @@ def main():
                     continue
 
                 # Process the result
-                is_correct = cleaned_answer == question['Correct_Option']
-                cost = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
+                is_correct: bool = cleaned_answer == question['Correct_Option']
+                cost: float = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
 
                 logger.info(f"Final answer: {cleaned_answer}")
                 logger.info(f"Question {index + 1} result: Correct: {is_correct}")
@@ -148,7 +147,7 @@ def main():
             # Save results
             logger.info(f"Saving results for round {iteration }")
             results_df = pd.DataFrame(results)
-            save_results_to_sqlite(results_df, model_info['variant'], BASE_FOLDER, today_date, current_time)
+            save_results_to_sqlite(results_df, model_info['variant'], BASE_FOLDER, today_date)
 
         logger.info(f"Completed all rounds for model: {model_info['name']}")
 

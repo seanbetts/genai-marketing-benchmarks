@@ -1,4 +1,5 @@
 import os
+from typing import Tuple, Optional, Any
 from openai import OpenAI
 import anthropic
 import vertexai
@@ -15,7 +16,7 @@ GPT_client = None
 claude_client = None
 together_client = None
 
-def initialize_clients():
+def initialize_clients() -> None:
     global GPT_client, claude_client, together_client
     if GPT_client is None:
         GPT_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -26,7 +27,7 @@ def initialize_clients():
 
     vertexai.init(project=PROJECT_ID, location=LOCATION)
 
-def query_language_model(provider, model, prompt, retry_count=3):
+def query_language_model(provider: str, model: str, prompt: str, retry_count: int = MAX_RETRIES) -> Tuple[str, int, int]:
     """
     Query a language model with the given prompt.
     
@@ -37,7 +38,7 @@ def query_language_model(provider, model, prompt, retry_count=3):
     retry_count (int): Number of times to retry in case of failure
     
     Returns:
-    tuple: (answer, prompt_tokens, completion_tokens)
+    Tuple[str, int, int]: (answer, prompt_tokens, completion_tokens)
     """
     initialize_clients()  # Ensure clients are initialized
 
