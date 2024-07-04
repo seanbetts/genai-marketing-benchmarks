@@ -8,7 +8,7 @@ def setup_logger(base_folder):
     current_time = datetime.now().strftime('%H-%M')
 
     # Set up folder
-    logs_folder = os.path.join(base_folder, 'Logs')
+    logs_folder = os.path.join(os.path.dirname(base_folder), 'Logs')
     today_logs_folder = os.path.join(logs_folder, today_date)
     if not os.path.exists(today_logs_folder):
         os.makedirs(today_logs_folder)
