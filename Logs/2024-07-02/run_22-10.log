@@ -1,0 +1,4 @@
+2024-07-02 22:10:53,040 - INFO - Starting the GenAI Marketing Benchmarks script
+2024-07-02 22:10:53,040 - INFO - Prompting user to select models
+2024-07-02 22:10:54,765 - INFO - Selected models: ['Claude-3.5 Sonnet']
+2024-07-02 22:10:54,765 - INFO - Loading questions from database
