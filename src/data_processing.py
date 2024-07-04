@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import re
 from src.logger import get_logger
+from src.constants import DATABASE_PATH, VALID_ANSWERS
 
 logger = get_logger()
 
@@ -63,46 +64,28 @@ def calculate_token_cost(prompt_tokens, completion_tokens, model_info):
     completion_cost = completion_tokens * model_info["completion"]
     return prompt_cost + completion_cost
 
-def load_questions(db_path, table_name='questions'):
-    """
-    Load questions from the SQLite database.
+def load_questions(table_name='questions'):
+    """Load questions from the SQLite database."""
+    if not os.path.exists(DATABASE_PATH):
+        raise FileNotFoundError(f"Database file not found at path: {DATABASE_PATH}")
     
-    Args:
-    db_path (str): Path to the SQLite database
-    table_name (str): Name of the table containing questions
-    
-    Returns:
-    pandas.DataFrame: Dataframe containing the questions
-    """
-    if not os.path.exists(db_path):
-        raise FileNotFoundError(f"Database file not found at path: {db_path}")
-    
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DATABASE_PATH)
     query = f"SELECT * FROM {table_name}"
     df = pd.read_sql_query(query, conn)
     conn.close()
     return df
 
 def answer_check(answer):
-    """
-    Check if the answer is valid.
-    
-    Args:
-    answer (str): The answer to check
-    
-    Returns:
-    tuple: (cleaned_answer, is_valid)
-    """
+    """Check if the answer is valid."""
     logger.info(f"Checking answer: {answer}")
-    valid_answers = ['A', 'B', 'C', 'D']
     answer = answer.upper().strip()
     if answer.startswith(('##', '**')):
-        answer = answer[2:].strip()  # Remove '##' or '**' and strip any leading/trailing spaces
+        answer = answer[2:].strip()
     elif answer.startswith(('#', '*')):
-        answer = answer[1:].strip()  # Remove '#' or '*' and strip any leading/trailing spaces
-    answer = answer[0] if answer else ''  # Keep only the first character if it exists
+        answer = answer[1:].strip()
+    answer = answer[0] if answer else ''
     
-    is_valid = answer in valid_answers
+    is_valid = answer in VALID_ANSWERS
     if not is_valid:
         logger.warning(f"Invalid answer received: {answer}")
     else:

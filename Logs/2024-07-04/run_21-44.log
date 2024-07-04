@@ -1,0 +1,6 @@
+2024-07-04 21:44:08,144 - INFO - Starting the GenAI Marketing Benchmarks script
+2024-07-04 21:44:08,144 - INFO - Prompting user to select models
+2024-07-04 21:44:16,861 - INFO - Starting the GenAI Marketing Benchmarks script
+2024-07-04 21:44:16,861 - INFO - Prompting user to select models
+2024-07-04 21:44:26,343 - INFO - Selected models: ['GPT-4 Turbo', 'GPT-4o', 'Claude-3.5 Sonnet', 'Claude-3 Opus', 'Gemini-1.5 Flash', 'Gemini-1.5 Pro', 'Llama-3-8B', 'Llama-3-70B', 'Mixtral-8x7B', 'Mixtral-8x22B']
+2024-07-04 21:44:26,343 - INFO - Loading questions from database

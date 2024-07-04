@@ -5,6 +5,11 @@ import vertexai
 from vertexai.generative_models import GenerativeModel
 from together import Together
 
+from src.logger import get_logger
+from src.constants import PROJECT_ID, LOCATION, MAX_RETRIES
+
+logger = get_logger()
+
 # Initialize API clients
 GPT_client = None
 claude_client = None
@@ -19,8 +24,7 @@ def initialize_clients():
     if together_client is None:
         together_client = Together(api_key=os.getenv('TOGETHER_API_KEY'))
 
-    project_id = "gen-lang-client-0130870695"
-    vertexai.init(project=project_id, location="europe-west2")
+    vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 def query_language_model(provider, model, prompt, retry_count=3):
     """
