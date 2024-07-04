@@ -147,7 +147,7 @@ def main() -> None:
             # Save results
             logger.info(f"Saving results for round {iteration }")
             results_df = pd.DataFrame(results)
-            save_results_to_sqlite(results_df, model_info['variant'], BASE_FOLDER, today_date)
+            save_results_to_sqlite(results_df, model_info['variant'], today_date)
 
         logger.info(f"Completed all rounds for model: {model_info['name']}")
 
