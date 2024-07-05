@@ -34,6 +34,7 @@ comm==0.2.0
 config==0.5.1
 contourpy==1.2.0
 courlan==0.9.4
+coverage==7.5.4
 crypto==1.4.1
 cryptography==41.0.5
 cycler==0.12.1
