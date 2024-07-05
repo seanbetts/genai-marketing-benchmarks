@@ -182,7 +182,7 @@ Before running the GenAI Marketing Benchmarks, you need to set up the project on
   ```
 - If you're having trouble with API keys, make sure they are correctly set in your `.env` file and that the file is in the root directory of the project.
 
-For any other issues, please check the [FAQ section](#faq) or open an issue on the GitHub repository.
+For any other issues, open an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) in the GitHub repository.
 
 ## Running the GenAI Marketing Benchmarks
 The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
