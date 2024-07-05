@@ -150,6 +150,7 @@ Before running the GenAI Marketing Benchmarks, you need to set up the project on
    ```
 
 4. **Set up environment variables**
+   
    Create a `.env` file in the root directory of the project and add your API keys:
    ```
    OPENAI_API_KEY=your_openai_api_key
@@ -160,6 +161,7 @@ Before running the GenAI Marketing Benchmarks, you need to set up the project on
    Replace `your_openai_api_key`, `your_claude_api_key`, and `your_together_api_key` with your actual API keys.
 
 5. **Set up the database**
+   
    The project uses SQLite for storing the questions and results. 
    
    To ensure the integrity of the GenAI Marketing Benchmarks, I am not making the database of multiple-choice questions publicly available. This will prevent these questions and answers from being included in future LLM training datasets, which could compromise the validity of the GenAI Marketing Benchmarks.
@@ -167,6 +169,7 @@ Before running the GenAI Marketing Benchmarks, you need to set up the project on
    If you would like to run your own tests please open an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) in the GitHub repository to request the multiple-choice questions database. The database file will need to be saved in a `Database` folder in the project root.
 
 6. **Verify installation**
+   
    Run the following command to verify that everything is set up correctly:
    ```bash
    python main.py --help
