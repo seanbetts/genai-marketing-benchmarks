@@ -14,39 +14,31 @@ def estimate_cost(num_questions: int, num_rounds: int, selected_models: List[Dic
     Estimate the cost of running the tests.
     
     Args:
-    num_questions (int): Number of questions per round ('all' or int)
+    num_questions (int): Number of questions per round
     num_rounds (int): Number of rounds to run
-    selected_models (list): List of selected model dictionaries
+    selected_models (List[Dict[str, Any]]): List of selected model dictionaries
     avg_prompt_tokens (int): Average number of tokens in a prompt
     avg_completion_tokens (int): Average number of tokens in a completion
     
     Returns:
-    tuple: (total_estimated_cost, list of (model_name, model_cost) tuples)
+    Tuple[float, List[Tuple[str, float]]]: (total_estimated_cost, list of (model_name, model_cost) tuples)
     """
     logger.info("Calculating estimated cost")
-    total_cost = 0
-    model_costs = []
 
-    for model in selected_models:
-        model_name = model['name']
-        prompt_cost = model['prompt']
-        completion_cost = model['completion']
+    total_tokens = num_questions * num_rounds
+    
+    model_costs = [
+        (model['name'], 
+         total_tokens * (model['prompt'] * avg_prompt_tokens + model['completion'] * avg_completion_tokens))
+        for model in selected_models
+    ]
 
-        # Calculate costs
-        total_prompt_tokens = num_questions * num_rounds * avg_prompt_tokens
-        total_completion_tokens = num_questions * num_rounds * avg_completion_tokens
-        
-        prompt_cost_total = total_prompt_tokens * prompt_cost
-        completion_cost_total = total_completion_tokens * completion_cost
-        
-        model_total_cost = prompt_cost_total + completion_cost_total
-        
-        model_costs.append((model_name, model_total_cost))
-        total_cost += model_total_cost
+    for model_name, model_cost in model_costs:
+        logger.info(f"Estimated cost for {model_name}: ${model_cost:.3f}")
 
-        logger.info(f"Estimated cost for {model_name}: ${model_total_cost:.3f}")
-
+    total_cost = sum(cost for _, cost in model_costs)
     logger.info(f"Total estimated cost: ${total_cost:.3f}")
+
     return total_cost, model_costs
 
 def calculate_token_cost(prompt_tokens: int, completion_tokens: int, model_info: Dict[str, Any]) -> float:
@@ -257,7 +249,6 @@ def ensure_summary_table(conn: sqlite3.Connection, table_name: str, columns: pd.
     cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (Model TEXT, Round INTEGER, Date TEXT)")
     cursor.execute(f"PRAGMA table_info({table_name})")
     existing_columns = [info[1] for info in cursor.fetchall()]
-    for col in columns:
-        safe_col = sanitize_column_name(col)
-        if safe_col not in existing_columns:
-            cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {safe_col} REAL")
+    new_columns = [sanitize_column_name(col) for col in columns if sanitize_column_name(col) not in existing_columns]
+    for safe_col in new_columns:
+        cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {safe_col} REAL")
