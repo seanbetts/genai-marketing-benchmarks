@@ -17,6 +17,9 @@ Generative AI (GenAI) has the potential to transform the marketing industry, yet
 - [Installing The GenAI Marketing Benchmarks](#installing-the-genai-marketing-benchmarks)
 - [Running The GenAI Marketing Benchmarks](#running-the-genai-marketing-benchmarks)
 - [Testing Methodology](#testing-methodology)
+    - [Marketing Knowledge](#marketing-knowledge)
+    - [Marketing Understanding](#marketing-understanding)
+    - [Marketing Capabilities](#marketing-capabilities)
 
 ## The Challenge
 
