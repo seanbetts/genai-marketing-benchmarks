@@ -130,14 +130,64 @@ The code currently allows the user to test the following LLMs:
 More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
 
 ## Installing the GenAI Marketing Benchmarks
-TBC
+Before running the GenAI Marketing Benchmarks, you need to set up the project on your local machine. Follow these steps to install and configure the project:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/seanbetts/genai-marketing-benchmarks.git
+   cd genai-marketing-benchmarks
+   ```
+
+2. **Set up a virtual environment** (optional but recommended)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+
+3. **Install required packages**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**
+   Create a `.env` file in the root directory of the project and add your API keys:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   CLAUDE_API_KEY=your_claude_api_key
+   TOGETHER_API_KEY=your_together_api_key
+   ```
+
+   Replace `your_openai_api_key`, `your_claude_api_key`, and `your_together_api_key` with your actual API keys.
+
+5. **Set up the database**
+   The project uses SQLite for storing results. The database file will be created automatically when you run the benchmarks for the first time. By default, it will be created in a `Database` folder in the project root.
+
+6. **Verify installation**
+   Run the following command to verify that everything is set up correctly:
+   ```bash
+   python main.py --help
+   ```
+
+   This should display the help message for the CLI, indicating that the installation was successful.
+
+### Troubleshooting
+- If you encounter any issues with package dependencies, try updating pip and setuptools:
+  ```bash
+  pip install --upgrade pip setuptools
+  ```
+  Then, run the installation command again.
+- Ensure that your Python version is 3.7 or higher. You can check your Python version with:
+  ```bash
+  python --version
+  ```
+- If you're having trouble with API keys, make sure they are correctly set in your `.env` file and that the file is in the root directory of the project.
+
+For any other issues, please check the [FAQ section](#faq) or open an issue on the GitHub repository.
 
 ## Running the GenAI Marketing Benchmarks
-
 The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
 
 ### Prerequisites
-
 Before running the benchmarks, ensure you have:
 
 1. Installed all required dependencies (see [Installation section](#installation) section).
@@ -149,9 +199,7 @@ Before running the benchmarks, ensure you have:
    ```
 
 ### Interactive Mode
-
 To run the benchmarks in interactive mode, simply execute:
-
 ```bash
 python main.py
 ```
@@ -163,22 +211,18 @@ This will guide you through a series of prompts to:
 - Confirm the estimated cost before running
 
 ### Non-Interactive Mode
-
 For automated or scripted runs, use the non-interactive mode with command-line arguments:
-
 ```bash
 python main.py --non-interactive [OPTIONS]
 ```
 
 Available options:
-
 - `--num-questions`: Number of questions to test (use 'all' for all available questions)
 - `--num-rounds`: Number of rounds to run
 - `--models` or `-m`: Models to use for testing (can be specified multiple times)
 - `--categories` or `-c`: Categories to test (can be specified multiple times)
 
 Example:
-
 ```bash
 python main.py --non-interactive --num-questions 100 --num-rounds 2 --models "GPT-4" "Claude-3 Opus" --categories "SEO" "PPC"
 ```
@@ -191,7 +235,6 @@ This command will:
 - Test questions from the SEO and PPC categories
 
 ### Viewing Results
-
 After running the benchmarks, results will be saved in the SQLite database. You can analyze these results using SQL queries or export them for further analysis.
 
 ## Testing Methodology
@@ -209,9 +252,7 @@ D. Print<br><br>
 Answer:*
 
 ### Marketing Understanding
-
 TBC
 
 ### Marketing Capabilities
-
 TBC
