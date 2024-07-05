@@ -4,6 +4,18 @@
 
 Generative AI (GenAI) has the potential to transform the marketing industry, yet there is currently no comprehensive way to assess the marketing capabilities of Large Language Models (LLMs) and other GenAI technologies. This project aims to fill that gap by creating benchmark tests that evaluate GenAI technnology's knowledge, understanding, and ability to perform marketing tasks.
 
+### Contents:
+- [The Challenge](#the-challenge)
+- [Project Objective](#project-objective)
+- [Contributors](#contributors)
+- [PHASE ONE - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge)
+- [PHASE TWO - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding)
+- [PHASE THREE - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities)
+- [Large Language Models](#large-language-models)
+- [Installing The Benchmarks](#installing-the-benchmarks)
+- [Running The Benchmarks](#running-the-benchmarks)
+- [Testing Methodology](#testing-methodology)
+
 ## The Challenge
 
 The marketing industry lacks standardized benchmarks to evaluate GenAI models specifically for marketing knowledge, understanding, and capabilities. While there are existing benchmarks for general GenAI capabilities, these do not adequately cover the breadth and depth required for marketing.
@@ -108,6 +120,9 @@ The code currently allows the user to test the following LLMs:
 
 More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
 
+## Installing the Benchmarks
+TBC
+
 ## Running the Benchmarks
 
 The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
@@ -170,7 +185,9 @@ This command will:
 
 After running the benchmarks, results will be saved in the SQLite database. You can analyze these results using SQL queries or export them for further analysis.
 
-## Testing Methodology - Marketing Knowledge
+## Testing Methodology
+
+### Marketing Knowledge
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
 *Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.<br><br>
@@ -182,10 +199,10 @@ C. Online ads<br>
 D. Print<br><br>
 Answer:*
 
-## Testing Methodology - Marketing Understanding
+### Marketing Understanding
 
 TBC
 
-## Testing Methodology - Marketing Capabilities
+### Marketing Capabilities
 
 TBC
