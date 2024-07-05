@@ -170,8 +170,6 @@ This command will:
 
 After running the benchmarks, results will be saved in the SQLite database. You can analyze these results using SQL queries or export them for further analysis.
 
-For more detailed information on interpreting the results, see the [Analyzing Results](#analyzing-results) section.
-
 ## Testing Methodology - Marketing Knowledge
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
