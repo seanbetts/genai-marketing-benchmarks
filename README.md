@@ -14,8 +14,8 @@ Generative AI (GenAI) has the potential to transform the marketing industry, yet
 - [Phase Three - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities)
 - [Ideas For Future Development](#ideas-for-future-development)
 - [Supported Large Language Models](#supported-large-language-models)
-- [Installing The Benchmarks](#installing-the-benchmarks)
-- [Running The Benchmarks](#running-the-benchmarks)
+- [Installing The GenAI Marketing Benchmarks](#installing-the-genai-marketing-benchmarks)
+- [Running The GenAI Marketing Benchmarks](#running-the-genai-marketing-benchmarks)
 - [Testing Methodology](#testing-methodology)
 
 ## The Challenge
@@ -129,10 +129,10 @@ The code currently allows the user to test the following LLMs:
 
 More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
 
-## Installing the Benchmarks
+## Installing the GenAI Marketing Benchmarks
 TBC
 
-## Running the Benchmarks
+## Running the GenAI Marketing Benchmarks
 
 The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
 
