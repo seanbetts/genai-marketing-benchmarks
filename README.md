@@ -4,7 +4,7 @@
 
 Generative AI (GenAI) has the potential to transform the marketing industry, yet there is currently no comprehensive way to assess the marketing capabilities of Large Language Models (LLMs) and other GenAI technologies. This project aims to fill that gap by creating benchmark tests that evaluate GenAI technnology's knowledge, understanding, and ability to perform marketing tasks.
 
-### Contents:
+## Contents:
 - [The Challenge](#the-challenge)
 - [Project Objective](#project-objective)
 - [Contributors](#contributors)
