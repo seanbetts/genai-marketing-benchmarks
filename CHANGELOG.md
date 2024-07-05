@@ -39,4 +39,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created a comprehensive README.md file explaining the project's purpose, challenges, and current status.
 
 [Unreleased]: https://github.com/seanbetts/genai-marketing-benchmarks/tree/dev
-[0.1.0]: https://github.com/seanbetts/genai-marketing-benchmarks/tree/0.1.0-beta
+[0.1.0-beta]: https://github.com/seanbetts/genai-marketing-benchmarks/tree/0.1.0-beta
