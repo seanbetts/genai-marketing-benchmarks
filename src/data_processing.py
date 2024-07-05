@@ -25,18 +25,18 @@ def estimate_cost(num_questions: int, num_rounds: int, selected_models: List[Dic
     """
     logger.info("Calculating estimated cost")
 
-    total_tokens = num_questions * num_rounds
+    total_questions = num_questions * num_rounds
     
     model_costs = [
         (model['name'], 
-         total_tokens * (model['prompt'] * avg_prompt_tokens + model['completion'] * avg_completion_tokens))
+         total_questions * ((model['prompt'] * avg_prompt_tokens) + (model['completion'] * avg_completion_tokens)))
         for model in selected_models
     ]
 
+    total_cost = sum(cost for _, cost in model_costs)
+
     for model_name, model_cost in model_costs:
         logger.info(f"Estimated cost for {model_name}: ${model_cost:.3f}")
-
-    total_cost = sum(cost for _, cost in model_costs)
 
     return total_cost, model_costs
 
@@ -56,20 +56,21 @@ def calculate_token_cost(prompt_tokens: int, completion_tokens: int, model_info:
     completion_cost = completion_tokens * model_info["completion"]
     return prompt_cost + completion_cost
 
-def load_questions(table_name: str ='questions') -> pd.DataFrame:
+def load_questions(db_path: str = DATABASE_PATH, table_name: str = 'questions') -> pd.DataFrame:
     """
     Load questions from the SQLite database.
     
     Args:
+    db_path (str): Path to the database
     table_name (str): Name of the table containing questions
     
     Returns:
     pd.DataFrame: Dataframe containing the questions
     """
-    if not os.path.exists(DATABASE_PATH):
-        raise FileNotFoundError(f"Database file not found at path: {DATABASE_PATH}")
+    if not os.path.exists(db_path):
+        raise FileNotFoundError(f"Database file not found at path: {db_path}")
     
-    conn = sqlite3.connect(DATABASE_PATH)
+    conn = sqlite3.connect(db_path)
     query = f"SELECT * FROM {table_name}"
     df = pd.read_sql_query(query, conn)
     conn.close()
@@ -101,18 +102,19 @@ def answer_check(answer: str) -> Tuple[str, bool]:
     
     return answer, is_valid
 
-def check_table_exists_and_get_highest_round(model_variant: str, today_date: str) -> int:
+def check_table_exists_and_get_highest_round(model_variant: str, today_date: str, db_path: str = DATABASE_PATH) -> int:
     """
     Check if a table exists for the given model and date, and get the highest round number.
     
     Args:
     model_variant (str): The variant of the model being tested
     today_date (str): The current date in 'YYYY-MM-DD' format
+    db_path (str): Path to the database
     
     Returns:
     int: The highest round number for the day, or 0 if the table doesn't exist
     """
-    conn = sqlite3.connect(DATABASE_PATH)
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
     model_cleaned = model_variant.split('/')[-1]
@@ -141,7 +143,7 @@ def check_table_exists_and_get_highest_round(model_variant: str, today_date: str
 def sanitize_column_name(col_name: str) -> str:
     return re.sub(r'[^a-zA-Z0-9_]', '_', col_name)
 
-def save_results_to_sqlite(iteration_results_df: pd.DataFrame, model: str, today_date: str) -> None:
+def save_results_to_sqlite(iteration_results_df: pd.DataFrame, model: str, today_date: str, db_path: str = DATABASE_PATH) -> None:
     """
     Save results to SQLite database.
     
@@ -150,9 +152,10 @@ def save_results_to_sqlite(iteration_results_df: pd.DataFrame, model: str, today
     model (str): Name of the model used
     base_folder (str): Base folder path
     today_date (str): Current date
+    db_path (str): Path to the database
     """
     logger.info(f"Saving results for model {model} to SQLite database")
-    conn = sqlite3.connect(DATABASE_PATH)
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
     model_cleaned = model.split('/')[-1]

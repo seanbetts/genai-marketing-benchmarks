@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented a Command Line Interface (CLI) using the `click` library, allowing for both interactive and non-interactive modes of operation.
 - Added CLI options for specifying number of questions, number of rounds, models to use, and categories to test.
 - Implemented environment variable checks to ensure necessary API keys are set before running the benchmark.
+- Created a `requirements.txt` file to specify project dependencies.
+- Added an "Installing The GenAI Marketing Benchmarks" section to the README.
+- Added a "Running The GenAI Marketing Benchmarks" section to the README.
+- Implemented comprehensive unit tests for data processing functions.
+- Created a `tests` directory with `test_data_processing.py`.
+- Added flexibility to database-related functions with optional `db_path` parameter.
 
 ### Changed
 - Reorganized project structure:
@@ -30,13 +36,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized database operations in `save_results_to_sqlite` by implementing batch inserts.
 - Refactored `main.py` to use the new CLI structure.
 - Improved error handling for missing environment variables.
-
-### Removed
-- Removed the original `test.py` file after migrating all functionality to new modular structure.
+- Updated the README structure to improve clarity and user guidance.
+- Refined the `estimate_cost` function in `data_processing.py` to improve accuracy.
+- Refined database handling in `data_processing.py` to improve testability and flexibility.
+- Updated `load_questions`, `save_results_to_sqlite`, and `check_table_exists_and_get_highest_round` functions to accept custom database paths.
 
 ### Improved
 - Enhanced the project's flexibility by allowing users to run the benchmark with specific parameters without modifying the code.
 - Streamlined the process of running the benchmark through command-line arguments.
+- Enhanced code reliability and maintainability through unit testing.
+- Increased test coverage for critical data processing functions.
+
+### Removed
+- Removed the original `test.py` file after migrating all functionality to new modular structure.
 
 ## [0.1.0-beta] - 2024-06-24 - main branch (current release)
 

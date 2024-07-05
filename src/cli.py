@@ -26,158 +26,163 @@ from src.logger import setup_logger, get_logger
 
 def run_benchmark(num_questions: str, num_rounds: int, models: List[str], categories: List[str], interactive: bool):
     """Run the GenAI Marketing Benchmarks."""
-    setup_logger(BASE_FOLDER)
-    logger = get_logger()
+    try:
+        setup_logger(BASE_FOLDER)
+        logger = get_logger()
 
-    logger.info("Starting the GenAI Marketing Benchmarks script")
+        logger.info("Starting the GenAI Marketing Benchmarks script")
 
-    # Check if API keys are set
-    if not os.getenv('OPENAI_API_KEY'):
-        logger.error("OPENAI_API_KEY is not set in the environment variables.")
-        return
-    if not os.getenv('CLAUDE_API_KEY'):
-        logger.error("CLAUDE_API_KEY is not set in the environment variables.")
-        return
-    if not os.getenv('TOGETHER_API_KEY'):
-        logger.error("TOGETHER_API_KEY is not set in the environment variables.")
-        return
-
-    # Get current date and time
-    today_date: str = datetime.today().strftime(DATE_FORMAT)
-
-    # Load questions
-    logger.info("Loading questions from database")
-    questions_df: pd.DataFrame = load_questions()
-    logger.info(f"Loaded {len(questions_df)} questions from database")
-
-    if interactive:
-        selected_models = select_models(MODELS)
-        all_categories = questions_df['Category'].unique().tolist()
-        selected_categories = select_categories(all_categories)
-        num_questions, num_rounds = get_user_inputs()
-    else:
-        selected_models = [model for model in MODELS if model['name'] in models]
-        selected_categories = categories
-        num_questions = num_questions if num_questions != 'all' else len(questions_df)
-
-    if not selected_models:
-        logger.error("No models selected. Exiting.")
-        return
-
-    if not selected_categories:
-        logger.error("No categories selected. Exiting.")
-        return
-
-    logger.info(f"Selected models: {[model['name'] for model in selected_models]}")
-    logger.info(f"Selected categories: {selected_categories}")
-    logger.info(f"Number of questions: {num_questions}")
-    logger.info(f"Number of rounds: {num_rounds}")
-
-    # Filter questions based on selected categories
-    filtered_df = questions_df[questions_df['Category'].isin(selected_categories)]
-
-    # Calculate total available questions
-    total_questions: int = len(filtered_df)
-
-    # Calculate estimated cost
-    questions_per_round = total_questions if num_questions == 'all' else min(int(num_questions), total_questions)
-    estimated_cost, model_costs = estimate_cost(questions_per_round, num_rounds, selected_models)
-    logger.info(f"Estimated total cost: ${estimated_cost:.3f}")
-
-    # Confirm run
-    if interactive:
-        logger.info("Asking user to confirm the run")
-        if not confirm_run(estimated_cost, model_costs, num_rounds, num_questions, total_questions):
-            logger.info("User aborted the run")
-            print("Testing run aborted by the user.")
+        # Check if API keys are set
+        if not os.getenv('OPENAI_API_KEY'):
+            logger.error("OPENAI_API_KEY is not set in the environment variables.")
             return
-        
-    # Main testing loop
-    for model_info in selected_models:
-        logger.info(f"Starting tests for model: {model_info['name']}")
+        if not os.getenv('CLAUDE_API_KEY'):
+            logger.error("CLAUDE_API_KEY is not set in the environment variables.")
+            return
+        if not os.getenv('TOGETHER_API_KEY'):
+            logger.error("TOGETHER_API_KEY is not set in the environment variables.")
+            return
 
-        # Check for existing rounds and get the highest round number
-        highest_round: int = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
-        start_round: int = highest_round + 1
+        # Get current date and time
+        today_date: str = datetime.today().strftime(DATE_FORMAT)
 
-        for iteration in range(start_round, start_round + num_rounds):
-            logger.info(f"Starting round {iteration} for {model_info['name']}")
-            results: List[Dict[str, Any]] = []
-            questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(num_questions, total_questions))
-            for index, question in questions_to_test.iterrows():
-                logger.info(f"Processing question {index + 1}")
-                # Prepare the prompt
-                prompt = PROMPT_TEMPLATE.format(
-                    question=question['Question'],
-                    option_a=question['Option_A'],
-                    option_b=question['Option_B'],
-                    option_c=question['Option_C'],
-                    option_d=question['Option_D']
-                )
-                
-                # Query the model
-                logger.info(f"Querying model {model_info['name']}...")
-                answer, prompt_tokens, completion_tokens = query_language_model(
-                    model_info['provider'],
-                    model_info['variant'],
-                    prompt
-                )
+        # Load questions
+        logger.info("Loading questions from database")
+        questions_df: pd.DataFrame = load_questions()
+        logger.info(f"Loaded {len(questions_df)} questions from database")
 
-                # Check the answer
-                logger.info(f"Raw answer from model: {answer}")
-                cleaned_answer, is_valid = answer_check(answer)
-                logger.info(f"Cleaned answer: {cleaned_answer}, Is valid: {is_valid}")
+        if interactive:
+            selected_models = select_models(MODELS)
+            all_categories = questions_df['Category'].unique().tolist()
+            selected_categories = select_categories(all_categories)
+            num_questions, num_rounds = get_user_inputs()
+        else:
+            selected_models = [model for model in MODELS if model['name'] in models]
+            selected_categories = categories
+            num_questions = num_questions if num_questions != 'all' else len(questions_df)
 
-                # If the answer is not valid, retry (you might want to limit the number of retries)
-                retry_count: int = MAX_RETRIES
-                while not is_valid and retry_count > 0:
-                    logger.warning(f"Invalid answer, retrying. Attempts left: {retry_count}")
+        if not selected_models:
+            logger.error("No models selected. Exiting.")
+            return
+
+        if not selected_categories:
+            logger.error("No categories selected. Exiting.")
+            return
+
+        logger.info(f"Selected models: {[model['name'] for model in selected_models]}")
+        logger.info(f"Selected categories: {selected_categories}")
+        logger.info(f"Number of questions: {num_questions}")
+        logger.info(f"Number of rounds: {num_rounds}")
+
+        # Filter questions based on selected categories
+        filtered_df = questions_df[questions_df['Category'].isin(selected_categories)]
+
+        # Calculate total available questions
+        total_questions: int = len(filtered_df)
+
+        # Calculate estimated cost
+        questions_per_round = total_questions if num_questions == 'all' else min(int(num_questions), total_questions)
+        estimated_cost, model_costs = estimate_cost(questions_per_round, num_rounds, selected_models)
+        logger.info(f"Estimated total cost: ${estimated_cost:.3f}")
+
+        # Confirm run
+        if interactive:
+            logger.info("Asking user to confirm the run")
+            if not confirm_run(estimated_cost, model_costs, num_rounds, num_questions, total_questions):
+                logger.info("User aborted the run")
+                print("Testing run aborted by the user.")
+                return
+            
+        # Main testing loop
+        for model_info in selected_models:
+            logger.info(f"Starting tests for model: {model_info['name']}")
+
+            # Check for existing rounds and get the highest round number
+            highest_round: int = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
+            start_round: int = highest_round + 1
+
+            for iteration in range(start_round, start_round + num_rounds):
+                logger.info(f"Starting round {iteration} for {model_info['name']}")
+                results: List[Dict[str, Any]] = []
+                questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(num_questions, total_questions))
+                for index, question in questions_to_test.iterrows():
+                    logger.info(f"Processing question {index + 1}")
+                    # Prepare the prompt
+                    prompt = PROMPT_TEMPLATE.format(
+                        question=question['Question'],
+                        option_a=question['Option_A'],
+                        option_b=question['Option_B'],
+                        option_c=question['Option_C'],
+                        option_d=question['Option_D']
+                    )
+                    
+                    # Query the model
+                    logger.info(f"Querying model {model_info['name']}...")
                     answer, prompt_tokens, completion_tokens = query_language_model(
                         model_info['provider'],
                         model_info['variant'],
                         prompt
                     )
-                    logger.info(f"Raw answer from model (retry): {answer}")
+
+                    # Check the answer
+                    logger.info(f"Raw answer from model: {answer}")
                     cleaned_answer, is_valid = answer_check(answer)
-                    logger.info(f"Cleaned answer (retry): {cleaned_answer}, Is valid: {is_valid}")
-                    retry_count -= 1
+                    logger.info(f"Cleaned answer: {cleaned_answer}, Is valid: {is_valid}")
 
-                if not is_valid:
-                    logger.error(f"Failed to get a valid answer after retries. Skipping this question.")
-                    continue
+                    # If the answer is not valid, retry (you might want to limit the number of retries)
+                    retry_count: int = MAX_RETRIES
+                    while not is_valid and retry_count > 0:
+                        logger.warning(f"Invalid answer, retrying. Attempts left: {retry_count}")
+                        answer, prompt_tokens, completion_tokens = query_language_model(
+                            model_info['provider'],
+                            model_info['variant'],
+                            prompt
+                        )
+                        logger.info(f"Raw answer from model (retry): {answer}")
+                        cleaned_answer, is_valid = answer_check(answer)
+                        logger.info(f"Cleaned answer (retry): {cleaned_answer}, Is valid: {is_valid}")
+                        retry_count -= 1
 
-                # Process the result
-                is_correct: bool = cleaned_answer == question['Correct_Option']
-                cost: float = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
+                    if not is_valid:
+                        logger.error(f"Failed to get a valid answer after retries. Skipping this question.")
+                        continue
 
-                logger.info(f"Final answer: {cleaned_answer}")
-                logger.info(f"Question {index + 1} result: Correct: {is_correct}")
+                    # Process the result
+                    is_correct: bool = cleaned_answer == question['Correct_Option']
+                    cost: float = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
 
-                # Store the result
-                results.append({
-                    'Round': iteration,
-                    'Discipline': question['Discipline'],
-                    'Category': question['Category'],
-                    'Sub_Category': question.get('Sub_Category'),
-                    'Question_Code': question['Question_Code'],
-                    'Question': question['Question'],
-                    'Correct_Option': question['Correct_Option'],
-                    'Provider': model_info['provider'],
-                    'Model': model_info['name'],
-                    'Model_Answer': cleaned_answer,
-                    'Is_Correct': is_correct,
-                    'Cost': cost,
-                    'Timestamp': datetime.now()
-                })
+                    logger.info(f"Final answer: {cleaned_answer}")
+                    logger.info(f"Question {index + 1} result: Correct: {is_correct}")
 
-            # Save results
-            logger.info(f"Saving results for round {iteration }")
-            results_df = pd.DataFrame(results)
-            save_results_to_sqlite(results_df, model_info['variant'], today_date)
+                    # Store the result
+                    results.append({
+                        'Round': iteration,
+                        'Discipline': question['Discipline'],
+                        'Category': question['Category'],
+                        'Sub_Category': question.get('Sub_Category'),
+                        'Question_Code': question['Question_Code'],
+                        'Question': question['Question'],
+                        'Correct_Option': question['Correct_Option'],
+                        'Provider': model_info['provider'],
+                        'Model': model_info['name'],
+                        'Model_Answer': cleaned_answer,
+                        'Is_Correct': is_correct,
+                        'Cost': cost,
+                        'Timestamp': datetime.now()
+                    })
 
-        logger.info(f"Completed all rounds for model: {model_info['name']}")
+                # Save results
+                logger.info(f"Saving results for round {iteration }")
+                results_df = pd.DataFrame(results)
+                save_results_to_sqlite(results_df, model_info['variant'], today_date)
 
-    logger.info("Testing completed successfully")
+            logger.info(f"Completed all rounds for model: {model_info['name']}")
+
+        logger.info("Testing completed successfully")
+        
+    except Exception as e:
+        logger.exception(f"An error occurred: {str(e)}")
+        raise  # Re-raise the exception for the test to catch
 
 if __name__ == '__main__':
     run_benchmark()
