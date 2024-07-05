@@ -8,10 +8,10 @@ Generative AI (GenAI) has the potential to transform the marketing industry, yet
 - [The Challenge](#the-challenge)
 - [Project Objective](#project-objective)
 - [Contributors](#contributors)
-- [PHASE ONE - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge)
-- [PHASE TWO - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding)
-- [PHASE THREE - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities)
-- [Large Language Models](#large-language-models)
+- [PHASE ONE - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge) - Status: Minimal Viable PRoduct
+- [PHASE TWO - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding) - Status: Not Started
+- [PHASE THREE - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities) - Status: Not Started
+- [Supported Large Language Models](#supported-large-language-models)
 - [Installing The Benchmarks](#installing-the-benchmarks)
 - [Running The Benchmarks](#running-the-benchmarks)
 - [Testing Methodology](#testing-methodology)
@@ -110,7 +110,7 @@ To collect and create a bank of open-ended questions across the breadth and dept
 #### Aim of Phase Three
 To collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
-## Large Language Models
+## Supported Large Language Models
 The code currently allows the user to test the following LLMs:
 - Anthropic (Claude-3 Haiku, Claude-3 Sonnet, Claude-3 Opus)
 - OpenAI (GPT-3.5 Turbo, GPT-4, GPT-4 Turbo, GPT-4o)
