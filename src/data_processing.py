@@ -37,7 +37,6 @@ def estimate_cost(num_questions: int, num_rounds: int, selected_models: List[Dic
         logger.info(f"Estimated cost for {model_name}: ${model_cost:.3f}")
 
     total_cost = sum(cost for _, cost in model_costs)
-    logger.info(f"Total estimated cost: ${total_cost:.3f}")
 
     return total_cost, model_costs
 

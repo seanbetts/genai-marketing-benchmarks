@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added docstrings to all functions following Google style format.
 - Created a `config.yaml` file to store model information and other settings.
 - Implemented list comprehensions in various parts of the code for improved efficiency.
+- Implemented a Command Line Interface (CLI) using the `click` library, allowing for both interactive and non-interactive modes of operation.
+- Added CLI options for specifying number of questions, number of rounds, models to use, and categories to test.
+- Implemented environment variable checks to ensure necessary API keys are set before running the benchmark.
 
 ### Changed
 - Reorganized project structure:
@@ -25,9 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented context managers for file operations and database connections.
 - Moved sensitive information (API keys) to environment variables.
 - Optimized database operations in `save_results_to_sqlite` by implementing batch inserts.
+- Refactored `main.py` to use the new CLI structure.
+- Improved error handling for missing environment variables.
 
 ### Removed
 - Removed the original `test.py` file after migrating all functionality to new modular structure.
+
+### Improved
+- Enhanced the project's flexibility by allowing users to run the benchmark with specific parameters without modifying the code.
+- Streamlined the process of running the benchmark through command-line arguments.
 
 ## [0.1.0-beta] - 2024-06-24 - main branch (current release)
 
