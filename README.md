@@ -8,9 +8,10 @@ Generative AI (GenAI) has the potential to transform the marketing industry, yet
 - [The Challenge](#the-challenge)
 - [Project Objective](#project-objective)
 - [Contributors](#contributors)
-- [PHASE ONE - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge) - Status: **Minimal Viable Product**
-- [PHASE TWO - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding) - Status: **Not Started**
-- [PHASE THREE - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities) - Status: **Not Started**
+- [Phase One - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge)
+- [Phase Two - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding)
+- [Phase Three - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities)
+- [Ideas For Future Development](#ideas-for-future-development)
 - [Supported Large Language Models](#supported-large-language-models)
 - [Installing The Benchmarks](#installing-the-benchmarks)
 - [Running The Benchmarks](#running-the-benchmarks)
@@ -109,6 +110,13 @@ To collect and create a bank of open-ended questions across the breadth and dept
 
 #### Aim of Phase Three
 To collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
+
+## Ideas for Future Development
+Below is a list of areas for future development:
+- Categorise questions into gobal/regional/local suitability to determine how well suited the GenAI Marketing Benchmarks are outside of the UK. I suspect 90% of questions are already globally suitable.
+- Get support/endorsment from marketing bodies outside of the UK (such as the [World Federation of Advertisers (WFA)](https://wfanet.org)) to expand the GenAI Marketing Benchmarks to other regions and markets.
+- Build a GUI for the GenAI Marketing Benchmarks so they are more broadly accessible.
+- Build a standard set of reporting dashboards to enable more accessible analysis of benchmark results.
 
 ## Supported Large Language Models
 The code currently allows the user to test the following LLMs:
