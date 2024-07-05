@@ -108,6 +108,70 @@ The code currently allows the user to test the following LLMs:
 
 More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
 
+## Running the Benchmarks
+
+The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
+
+### Prerequisites
+
+Before running the benchmarks, ensure you have:
+
+1. Installed all required dependencies (see [Installation section](#installation) section).
+2. Set up your `.env` file with the necessary API keys:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   CLAUDE_API_KEY=your_claude_api_key
+   TOGETHER_API_KEY=your_together_api_key
+   ```
+
+### Interactive Mode
+
+To run the benchmarks in interactive mode, simply execute:
+
+```bash
+python main.py
+```
+
+This will guide you through a series of prompts to:
+- Select the models to test
+- Choose the categories of questions
+- Specify the number of questions and rounds
+- Confirm the estimated cost before running
+
+### Non-Interactive Mode
+
+For automated or scripted runs, use the non-interactive mode with command-line arguments:
+
+```bash
+python main.py --non-interactive [OPTIONS]
+```
+
+Available options:
+
+- `--num-questions`: Number of questions to test (use 'all' for all available questions)
+- `--num-rounds`: Number of rounds to run
+- `--models` or `-m`: Models to use for testing (can be specified multiple times)
+- `--categories` or `-c`: Categories to test (can be specified multiple times)
+
+Example:
+
+```bash
+python main.py --non-interactive --num-questions 100 --num-rounds 2 --models "GPT-4" "Claude-3 Opus" --categories "SEO" "PPC"
+```
+
+This command will:
+- Run in non-interactive mode
+- Test 100 questions
+- Perform 2 rounds of testing
+- Use the GPT-4 and Claude-3 Opus models
+- Test questions from the SEO and PPC categories
+
+### Viewing Results
+
+After running the benchmarks, results will be saved in the SQLite database. You can analyze these results using SQL queries or export them for further analysis.
+
+For more detailed information on interpreting the results, see the [Analyzing Results](#analyzing-results) section.
+
 ## Testing Methodology - Marketing Knowledge
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
