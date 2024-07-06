@@ -1,3 +1,6 @@
+# Version
+version: "0.2.0-beta"
+
 # Database settings
 database:
   name: 'results_database.sqlite'

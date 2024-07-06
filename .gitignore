@@ -3,3 +3,4 @@
 pdf_prompt.md
 __pycache__/
 *.py[cod]
+.coverage
