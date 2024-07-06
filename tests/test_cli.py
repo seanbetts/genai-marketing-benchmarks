@@ -159,5 +159,104 @@ class TestCLI(unittest.TestCase):
             self.assertEqual(result.exit_code, 0, f"Expected exit code 0, but got {result.exit_code}. Output: {result.output}")
             self.assertIn("Testing run aborted by the user", result.output)
 
+    @patch('src.cli.load_questions')
+    @patch('src.cli.query_language_model')
+    @patch('src.cli.save_results_to_sqlite')
+    @patch('src.cli.os.getenv')
+    def test_invalid_answer_retry(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({
+            'Discipline': ['SEO'],
+            'Category': ['SEO'],
+            'Question': ['Test Question'],
+            'Option_A': ['A'],
+            'Option_B': ['B'],
+            'Option_C': ['C'],
+            'Option_D': ['D'],
+            'Correct_Option': ['A'],
+            'Question_Code': ['SEO001']
+        })
+        mock_query_model.side_effect = [
+            ('Invalid', 10, 5),  # First call returns invalid answer
+            ('A', 10, 5)  # Second call returns valid answer
+        ]
+        
+        with patch('src.cli.MODELS', [{'name': 'GPT-4', 'provider': 'OpenAI', 'variant': 'gpt-4', 'prompt': 0.01, 'completion': 0.01}]):
+            result = self.runner.invoke(run_benchmark, [
+                '--non-interactive',
+                '--num-questions', '1',
+                '--num-rounds', '1',
+                '--models', 'GPT-4',
+                '--categories', 'SEO'
+            ])
+            
+            self.assertEqual(result.exit_code, 0, f"Invalid answer retry test failed with output: {result.output}")
+            self.assertIn("Invalid answer, retrying", result.output)
+            mock_save_results.assert_called()
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.query_language_model')
+    @patch('src.cli.save_results_to_sqlite')
+    @patch('src.cli.os.getenv')
+    def test_max_retries_exceeded(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({
+            'Discipline': ['SEO'],
+            'Category': ['SEO'],
+            'Question': ['Test Question'],
+            'Option_A': ['A'],
+            'Option_B': ['B'],
+            'Option_C': ['C'],
+            'Option_D': ['D'],
+            'Correct_Option': ['A'],
+            'Question_Code': ['SEO001']
+        })
+        mock_query_model.return_value = ('Invalid', 10, 5)  # Always return invalid answer
+        
+        with patch('src.cli.MODELS', [{'name': 'GPT-4', 'provider': 'OpenAI', 'variant': 'gpt-4', 'prompt': 0.01, 'completion': 0.01}]), \
+             patch('src.cli.MAX_RETRIES', 3):  # Set MAX_RETRIES to 3 for this test
+            result = self.runner.invoke(run_benchmark, [
+                '--non-interactive',
+                '--num-questions', '1',
+                '--num-rounds', '1',
+                '--models', 'GPT-4',
+                '--categories', 'SEO'
+            ])
+            
+            self.assertEqual(result.exit_code, 0, f"Max retries exceeded test failed with output: {result.output}")
+            self.assertIn("Failed to get a valid answer after retries", result.output)
+            mock_save_results.assert_called()
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.query_language_model')
+    @patch('src.cli.save_results_to_sqlite')
+    @patch('src.cli.os.getenv')
+    def test_unhandled_exception(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({
+            'Discipline': ['SEO'],
+            'Category': ['SEO'],
+            'Question': ['Test Question'],
+            'Option_A': ['A'],
+            'Option_B': ['B'],
+            'Option_C': ['C'],
+            'Option_D': ['D'],
+            'Correct_Option': ['A'],
+            'Question_Code': ['SEO001']
+        })
+        mock_query_model.side_effect = Exception("Unhandled error")
+        
+        with patch('src.cli.MODELS', [{'name': 'GPT-4', 'provider': 'OpenAI', 'variant': 'gpt-4', 'prompt': 0.01, 'completion': 0.01}]):
+            result = self.runner.invoke(run_benchmark, [
+                '--non-interactive',
+                '--num-questions', '1',
+                '--num-rounds', '1',
+                '--models', 'GPT-4',
+                '--categories', 'SEO'
+            ])
+            
+            self.assertNotEqual(result.exit_code, 0, f"Unhandled exception test failed with output: {result.output}")
+            self.assertIn("An error occurred: Unhandled error", result.output)
+
 if __name__ == '__main__':
     unittest.main()

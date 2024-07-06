@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added an "Installing The GenAI Marketing Benchmarks" section to the README.
 - Added a "Running The GenAI Marketing Benchmarks" section to the README.
 - Implemented comprehensive unit tests for data processing functions.
-- Created a `tests` directory with `test_api_calls.py`, `test_cli.py`, `test_data_processing.py`, and `test_user_interface.py`.
+- Created a `tests` directory with `test_api_calls.py`, `test_cli.py`, `test_constants.py`, `test_data_processing.py`, and `test_user_interface.py`.
 - Added flexibility to database-related functions with optional `db_path` parameter.
 
 ### Changed
