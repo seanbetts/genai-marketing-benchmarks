@@ -127,7 +127,7 @@ The code currently allows the user to test the following LLMs:
 - Meta (Llama-2 7B, Llama-2 13B, Llama-2 70B, Llama-3 8B, Llama-3 70B)
 - Mistral (Mistral-7B, Mixtral-8x7B, Mixtral-8x22B)
 
-More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
+More open-source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models. A list of supported open-source models is [here](https://docs.together.ai/docs/chat-models).
 
 ## Installing the GenAI Marketing Benchmarks
 Before running the GenAI Marketing Benchmarks, you need to set up the project on your local machine. Follow these steps to install and configure the project:
