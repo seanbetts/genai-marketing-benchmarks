@@ -24,15 +24,7 @@ def curses_menu(stdscr: 'curses.window', items: List[str], prompt: str, all_sele
     Returns:
     List[str]: Selected items
     """
-    curses.curs_set(0)
-    stdscr.clear()
-    selected_rows = set(range(len(items))) if all_selected else set()
-    current_row = 0
-
-    curses.start_color()
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_GREEN)
-
-    while True:
+    def draw_menu(current_row, selected_rows):
         stdscr.clear()
         stdscr.addstr(0, 0, prompt)
         stdscr.addstr(1, 0, "Use arrow keys to navigate, Space to toggle selection, Enter to confirm")
@@ -40,12 +32,18 @@ def curses_menu(stdscr: 'curses.window', items: List[str], prompt: str, all_sele
             x = 0
             y = idx + 2  # Offset by 2 to account for the prompt and instruction lines
             if idx == current_row:
-                stdscr.attron(curses.color_pair(1))
-                stdscr.addstr(y, x, f"{'[X]' if idx in selected_rows else '[ ]'} {item}")
-                stdscr.attroff(curses.color_pair(1))
+                stdscr.addstr(y, x, f"{'[X]' if idx in selected_rows else '[ ]'} {item}", curses.A_REVERSE)
             else:
                 stdscr.addstr(y, x, f"{'[X]' if idx in selected_rows else '[ ]'} {item}")
-        
+        stdscr.refresh()
+
+    curses.curs_set(0)
+    selected_rows = set(range(len(items))) if all_selected else set()
+    current_row = 0
+
+    draw_menu(current_row, selected_rows)
+
+    while True:
         key = stdscr.getch()
 
         if key == curses.KEY_UP and current_row > 0:
@@ -59,8 +57,8 @@ def curses_menu(stdscr: 'curses.window', items: List[str], prompt: str, all_sele
                 selected_rows.add(current_row)
         elif key in [10, 13]:  # Enter key
             break
-        
-        stdscr.refresh()
+
+        draw_menu(current_row, selected_rows)
 
     return [items[idx] for idx in selected_rows]
 

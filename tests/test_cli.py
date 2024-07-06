@@ -1,116 +1,163 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from click.testing import CliRunner
-from src.cli import run_benchmark
 import pandas as pd
-from datetime import datetime
+from src.cli import run_benchmark
 
 class TestCLI(unittest.TestCase):
-
     def setUp(self):
         self.runner = CliRunner()
 
-    @patch('src.cli.os.getenv')
-    @patch('src.cli.select_models')
     @patch('src.cli.load_questions')
-    @patch('src.cli.select_categories')
-    @patch('src.cli.get_user_inputs')
-    @patch('src.cli.estimate_cost')
-    @patch('src.cli.confirm_run')
-    @patch('src.cli.check_table_exists_and_get_highest_round')
     @patch('src.cli.query_language_model')
     @patch('src.cli.save_results_to_sqlite')
-    @patch('src.cli.answer_check')
-    def test_run_benchmark_interactive(self, mock_answer_check, mock_save, mock_query, mock_check_table, mock_confirm, mock_estimate, 
-                                       mock_get_inputs, mock_select_categories, mock_load_questions, mock_select_models, mock_getenv):
-        # Mock environment variables
-        mock_getenv.return_value = 'mock_api_key'
-        
-        # Mock the interactive mode selections
-        mock_select_models.return_value = [{'name': 'TestModel', 'provider': 'TestProvider', 'variant': 'TestVariant'}]
+    @patch('src.cli.os.getenv')
+    def test_run_benchmark_interactive(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
         mock_load_questions.return_value = pd.DataFrame({
-            'Category': ['TestCategory'], 
-            'Question': ['TestQuestion'],
-            'Discipline': ['TestDiscipline'],
-            'Sub_Category': ['TestSubCategory'],
-            'Question_Code': ['TestCode'],
-            'Correct_Option': ['A'],
+            'Discipline': ['Marketing'],
+            'Category': ['Test Category'],
+            'Question': ['Test Question'],
             'Option_A': ['A'],
             'Option_B': ['B'],
             'Option_C': ['C'],
-            'Option_D': ['D']
+            'Option_D': ['D'],
+            'Correct_Option': ['A'],
+            'Question_Code': ['TEST001']
         })
-        mock_select_categories.return_value = ['TestCategory']
-        mock_get_inputs.return_value = ('all', 1)
-        mock_estimate.return_value = (10.0, [('TestModel', 10.0)])
-        mock_confirm.return_value = True
-        mock_check_table.return_value = 0
-        mock_query.return_value = ('A', 10, 5)
-        mock_answer_check.return_value = ('A', True)
-
-        result = self.runner.invoke(run_benchmark)
+        mock_query_model.return_value = ('A', 10, 5)
         
-        print(f"Exit code: {result.exit_code}")
-        print(f"Exception: {result.exception}")
-        print(f"Output: {result.output}")
-        
-        self.assertEqual(result.exit_code, 0)
-        mock_select_models.assert_called_once()
-        mock_load_questions.assert_called_once()
-        mock_select_categories.assert_called_once()
-        mock_get_inputs.assert_called_once()
-        mock_estimate.assert_called_once()
-        mock_confirm.assert_called_once()
-        mock_check_table.assert_called_once()
-        mock_query.assert_called()
-        mock_save.assert_called()
+        with patch('src.cli.select_models', return_value=[{'name': 'Test Model', 'provider': 'Test Provider', 'variant': 'test-variant', 'prompt': 0.01, 'completion': 0.01}]), \
+             patch('src.cli.select_categories', return_value=['Test Category']), \
+             patch('src.cli.get_user_inputs', return_value=(1, 1)), \
+             patch('src.cli.confirm_run', return_value=True):
+            
+            result = self.runner.invoke(run_benchmark, ['--interactive'])
+            
+            print(f"Interactive test output: {result.output}")
+            self.assertEqual(result.exit_code, 0, f"Interactive test failed with output: {result.output}")
+            mock_save_results.assert_called()
 
-    @patch('src.cli.os.getenv')
     @patch('src.cli.load_questions')
-    @patch('src.cli.estimate_cost')
-    @patch('src.cli.check_table_exists_and_get_highest_round')
     @patch('src.cli.query_language_model')
     @patch('src.cli.save_results_to_sqlite')
-    @patch('src.cli.answer_check')
-    def test_run_benchmark_non_interactive(self, mock_answer_check, mock_save, mock_query, mock_check_table, mock_estimate, mock_load_questions, mock_getenv):
-        # Mock environment variables
-        mock_getenv.return_value = 'mock_api_key'
-        
+    @patch('src.cli.os.getenv')
+    def test_run_benchmark_non_interactive(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
         mock_load_questions.return_value = pd.DataFrame({
-            'Category': ['TestCategory'], 
-            'Question': ['TestQuestion'],
-            'Discipline': ['TestDiscipline'],
-            'Sub_Category': ['TestSubCategory'],
-            'Question_Code': ['TestCode'],
-            'Correct_Option': ['A'],
+            'Discipline': ['SEO'],
+            'Category': ['SEO'],
+            'Question': ['Test Question'],
             'Option_A': ['A'],
             'Option_B': ['B'],
             'Option_C': ['C'],
-            'Option_D': ['D']
+            'Option_D': ['D'],
+            'Correct_Option': ['A'],
+            'Question_Code': ['SEO001']
         })
-        mock_estimate.return_value = (10.0, [('TestModel', 10.0)])
-        mock_check_table.return_value = 0
-        mock_query.return_value = ('A', 10, 5)
-        mock_answer_check.return_value = ('A', True)
+        mock_query_model.return_value = ('A', 10, 5)
+        
+        with patch('src.cli.MODELS', [{'name': 'GPT-4', 'provider': 'OpenAI', 'variant': 'gpt-4', 'prompt': 0.01, 'completion': 0.01}]):
+            result = self.runner.invoke(run_benchmark, [
+                '--non-interactive',
+                '--num-questions', '1',
+                '--num-rounds', '1',
+                '--models', 'GPT-4',
+                '--categories', 'SEO'
+            ])
+            
+            print(f"Non-interactive test output: {result.output}")
+            self.assertEqual(result.exit_code, 0, f"Non-interactive test failed with output: {result.output}")
+            mock_save_results.assert_called()
 
-        result = self.runner.invoke(run_benchmark, [
-            '--non-interactive',
-            '--num-questions', '1',
-            '--num-rounds', '1',
-            '--models', 'TestModel',
-            '--categories', 'TestCategory'
-        ])
+    @patch('src.cli.load_questions')
+    @patch('src.cli.query_language_model')
+    @patch('src.cli.save_results_to_sqlite')
+    @patch('src.cli.os.getenv')
+    def test_run_benchmark_all_questions(self, mock_getenv, mock_save_results, mock_query_model, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({
+            'Discipline': ['SEO'] * 100,
+            'Category': ['SEO'] * 100,
+            'Question': ['Q'] * 100,
+            'Option_A': ['A'] * 100,
+            'Option_B': ['B'] * 100,
+            'Option_C': ['C'] * 100,
+            'Option_D': ['D'] * 100,
+            'Correct_Option': ['A'] * 100,
+            'Question_Code': [f'SEO{i:03d}' for i in range(1, 101)]
+        })
+        mock_query_model.return_value = ('A', 10, 5)
         
-        print(f"Exit code: {result.exit_code}")
-        print(f"Exception: {result.exception}")
-        print(f"Output: {result.output}")
-        
-        self.assertEqual(result.exit_code, 0)
-        mock_load_questions.assert_called_once()
-        mock_estimate.assert_called_once()
-        mock_check_table.assert_called_once()
-        mock_query.assert_called()
-        mock_save.assert_called()
+        with patch('src.cli.MODELS', [{'name': 'GPT-4', 'provider': 'OpenAI', 'variant': 'gpt-4', 'prompt': 0.01, 'completion': 0.01}]):
+            result = self.runner.invoke(run_benchmark, [
+                '--non-interactive',
+                '--num-questions', 'all',
+                '--num-rounds', '1',
+                '--models', 'GPT-4',
+                '--categories', 'SEO'
+            ])
+            
+            print(f"All questions test output: {result.output}")
+            self.assertEqual(result.exit_code, 0, f"All questions test failed with output: {result.output}")
+            mock_save_results.assert_called()
+
+    @patch('src.cli.os.getenv')
+    def test_missing_api_keys(self, mock_getenv):
+        mock_getenv.return_value = None
+        result = self.runner.invoke(run_benchmark, ['--interactive'])
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn("is not set in the environment variables", result.output)
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.os.getenv')
+    def test_no_models_selected(self, mock_getenv, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({'Category': ['Test']})
+        with patch('src.cli.select_models', return_value=[]), \
+             patch('src.cli.select_categories', return_value=['Test']), \
+             patch('src.cli.get_user_inputs', return_value=(1, 1)):
+            result = self.runner.invoke(run_benchmark, ['--interactive'])
+            self.assertNotEqual(result.exit_code, 0)
+            self.assertIn("No models selected", result.output)
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.os.getenv')
+    def test_no_categories_selected(self, mock_getenv, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({'Category': ['Test']})
+        with patch('src.cli.select_models', return_value=[{'name': 'Test Model'}]), \
+             patch('src.cli.select_categories', return_value=[]), \
+             patch('src.cli.get_user_inputs', return_value=(1, 1)):
+            result = self.runner.invoke(run_benchmark, ['--interactive'])
+            self.assertNotEqual(result.exit_code, 0)
+            self.assertIn("No categories selected", result.output)
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.os.getenv')
+    def test_no_questions_available(self, mock_getenv, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({'Category': []})
+        with patch('src.cli.select_models', return_value=[{'name': 'Test Model'}]), \
+             patch('src.cli.select_categories', return_value=['Test']), \
+             patch('src.cli.get_user_inputs', return_value=(1, 1)):
+            result = self.runner.invoke(run_benchmark, ['--interactive'])
+            self.assertNotEqual(result.exit_code, 0)
+            self.assertIn("No questions available for the selected categories", result.output)
+
+    @patch('src.cli.load_questions')
+    @patch('src.cli.os.getenv')
+    def test_user_abort(self, mock_getenv, mock_load_questions):
+        mock_getenv.side_effect = lambda x: 'dummy_key' if x in ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY'] else None
+        mock_load_questions.return_value = pd.DataFrame({'Category': ['Test']})
+        with patch('src.cli.select_models', return_value=[{'name': 'Test Model', 'provider': 'Test', 'variant': 'test'}]), \
+            patch('src.cli.select_categories', return_value=['Test']), \
+            patch('src.cli.get_user_inputs', return_value=(1, 1)), \
+            patch('src.cli.confirm_run', return_value=False), \
+            patch('src.cli.estimate_cost', return_value=(0, [])):
+            result = self.runner.invoke(run_benchmark, ['--interactive'])
+            self.assertEqual(result.exit_code, 0, f"Expected exit code 0, but got {result.exit_code}. Output: {result.output}")
+            self.assertIn("Testing run aborted by the user", result.output)
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,6 +3,7 @@ from typing import List, Union, Dict, Any
 from datetime import datetime
 import pandas as pd
 import os
+import sys
 from dotenv import load_dotenv
 
 # Load environment variables at the very beginning
@@ -33,15 +34,12 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
         logger.info("Starting the GenAI Marketing Benchmarks script")
 
         # Check if API keys are set
-        if not os.getenv('OPENAI_API_KEY'):
-            logger.error("OPENAI_API_KEY is not set in the environment variables.")
-            return
-        if not os.getenv('CLAUDE_API_KEY'):
-            logger.error("CLAUDE_API_KEY is not set in the environment variables.")
-            return
-        if not os.getenv('TOGETHER_API_KEY'):
-            logger.error("TOGETHER_API_KEY is not set in the environment variables.")
-            return
+        required_keys = ['OPENAI_API_KEY', 'CLAUDE_API_KEY', 'TOGETHER_API_KEY']
+        missing_keys = [key for key in required_keys if not os.getenv(key)]
+        if missing_keys:
+            for key in missing_keys:
+                logger.error(f"{key} is not set in the environment variables.")
+            sys.exit(1)
 
         # Get current date and time
         today_date: str = datetime.today().strftime(DATE_FORMAT)
@@ -58,16 +56,16 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
             num_questions, num_rounds = get_user_inputs()
         else:
             selected_models = [model for model in MODELS if model['name'] in models]
-            selected_categories = categories
+            selected_categories = list(categories)
             num_questions = num_questions if num_questions != 'all' else len(questions_df)
 
         if not selected_models:
             logger.error("No models selected. Exiting.")
-            return
+            sys.exit(1)
 
         if not selected_categories:
             logger.error("No categories selected. Exiting.")
-            return
+            sys.exit(1)
 
         logger.info(f"Selected models: {[model['name'] for model in selected_models]}")
         logger.info(f"Selected categories: {selected_categories}")
@@ -80,6 +78,10 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
         # Calculate total available questions
         total_questions: int = len(filtered_df)
 
+        if total_questions == 0:
+            logger.error("No questions available for the selected categories. Exiting.")
+            sys.exit(1)
+
         # Calculate estimated cost
         questions_per_round = total_questions if num_questions == 'all' else min(int(num_questions), total_questions)
         estimated_cost, model_costs = estimate_cost(questions_per_round, num_rounds, selected_models)
@@ -91,7 +93,7 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
             if not confirm_run(estimated_cost, model_costs, num_rounds, num_questions, total_questions):
                 logger.info("User aborted the run")
                 print("Testing run aborted by the user.")
-                return
+                return  # Use return instead of sys.exit(0)
             
         # Main testing loop
         for model_info in selected_models:
@@ -104,7 +106,7 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
             for iteration in range(start_round, start_round + num_rounds):
                 logger.info(f"Starting round {iteration} for {model_info['name']}")
                 results: List[Dict[str, Any]] = []
-                questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(num_questions, total_questions))
+                questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(int(num_questions), total_questions))
                 for index, question in questions_to_test.iterrows():
                     logger.info(f"Processing question {index + 1}")
                     # Prepare the prompt
@@ -182,7 +184,7 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
         
     except Exception as e:
         logger.exception(f"An error occurred: {str(e)}")
-        raise  # Re-raise the exception for the test to catch
+        sys.exit(1)
 
 if __name__ == '__main__':
     run_benchmark()

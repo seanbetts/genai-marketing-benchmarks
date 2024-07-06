@@ -250,7 +250,7 @@ def ensure_summary_table(conn: sqlite3.Connection, table_name: str, columns: pd.
     cursor = conn.cursor()
     cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (Model TEXT, Round INTEGER, Date TEXT)")
     cursor.execute(f"PRAGMA table_info({table_name})")
-    existing_columns = [info[1] for info in cursor.fetchall()]
+    existing_columns = [info[1] if isinstance(info, tuple) else info['name'] for info in cursor.fetchall()]
     new_columns = [sanitize_column_name(col) for col in columns if sanitize_column_name(col) not in existing_columns]
     for safe_col in new_columns:
         cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {safe_col} REAL")
