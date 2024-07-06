@@ -4,6 +4,20 @@
 
 Generative AI (GenAI) has the potential to transform the marketing industry, yet there is currently no comprehensive way to assess the marketing capabilities of Large Language Models (LLMs) and other GenAI technologies. This project aims to fill that gap by creating benchmark tests that evaluate GenAI technnology's knowledge, understanding, and ability to perform marketing tasks.
 
+## Contents
+- [The Challenge](#the-challenge)
+- [Project Objective](#project-objective)
+- [Contributors](#contributors)
+- [Phase One - Testing Marketing Knowledge](#phase-one---testing-marketing-knowledge)
+    - [Preliminary Results](#preliminary-results)
+- [Phase Two - Testing Markeitng Understanding](#phase-two---testing-marketing-understanding)
+- [Phase Three - Testing Marketing Capabilities](#phase-three---testing-marketing-capabilities)
+- [Ideas For Future Development](#ideas-for-future-development)
+- [Supported Large Language Models](#supported-large-language-models)
+- [Installing The GenAI Marketing Benchmarks](#installing-the-genai-marketing-benchmarks)
+- [Running The GenAI Marketing Benchmarks](#running-the-genai-marketing-benchmarks)
+- [Testing Methodology](#testing-methodology)
+
 ## The Challenge
 
 The marketing industry lacks standardized benchmarks to evaluate GenAI models specifically for marketing knowledge, understanding, and capabilities. While there are existing benchmarks for general GenAI capabilities, these do not adequately cover the breadth and depth required for marketing.
@@ -98,7 +112,14 @@ To collect and create a bank of open-ended questions across the breadth and dept
 #### Aim of Phase Three
 To collect and create a bank of discipline specific tasks across the breadth and depth of marketing that can be used to test the **capabilities** of LLMs to complete these tasks. The LLMs' will need to be able to complete these tasks to a pre-defined standard (TBC) to be scored as capable of completing the task.
 
-## Large Language Models
+## Ideas for Future Development
+Below is a list of areas for future development:
+- Categorise questions into gobal/regional/local suitability to determine how well suited the GenAI Marketing Benchmarks are outside of the UK. I suspect 90% of questions are already globally suitable.
+- Get support/endorsment from marketing bodies outside of the UK (such as the [World Federation of Advertisers (WFA)](https://wfanet.org)) to expand the GenAI Marketing Benchmarks to other regions and markets.
+- Build a GUI for the GenAI Marketing Benchmarks so they are more broadly accessible.
+- Build a standard set of reporting dashboards to enable more accessible analysis of benchmark results.
+
+## Supported Large Language Models
 The code currently allows the user to test the following LLMs:
 - Anthropic (Claude-3 Haiku, Claude-3 Sonnet, Claude-3 Opus)
 - OpenAI (GPT-3.5 Turbo, GPT-4, GPT-4 Turbo, GPT-4o)
@@ -106,9 +127,126 @@ The code currently allows the user to test the following LLMs:
 - Meta (Llama-2 7B, Llama-2 13B, Llama-2 70B, Llama-3 8B, Llama-3 70B)
 - Mistral (Mistral-7B, Mixtral-8x7B, Mixtral-8x22B)
 
-More open source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open source models.
+More open-source models can be easily added to the code if supported by [Together AI](https://www.together.ai) which the project uses for inference for open-source models. A list of supported open-source models is available [here](https://docs.together.ai/docs/chat-models).
 
-## Testing Methodology - Marketing Knowledge
+## Installing the GenAI Marketing Benchmarks
+Before running the GenAI Marketing Benchmarks, you need to set up the project on your local machine. Follow these steps to install and configure the project:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/seanbetts/genai-marketing-benchmarks.git
+   cd genai-marketing-benchmarks
+   ```
+
+2. **Set up a virtual environment** (optional but recommended)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+
+3. **Install required packages**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**
+   
+   Create a `.env` file in the root directory of the project and add your API keys:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   CLAUDE_API_KEY=your_claude_api_key
+   TOGETHER_API_KEY=your_together_api_key
+   ```
+
+   Replace `your_openai_api_key`, `your_claude_api_key`, and `your_together_api_key` with your actual API keys.
+
+5. **Set up the database**
+   
+   The project uses SQLite for storing the questions and results. 
+   
+   To ensure the integrity of the GenAI Marketing Benchmarks, I am not making the database of multiple-choice questions publicly available. This will prevent these questions and answers from being included in future LLM training datasets, which could compromise the validity of the GenAI Marketing Benchmarks.
+
+   If you would like to run your own tests please open an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) in the GitHub repository to request the multiple-choice questions database. The database file will need to be saved in a `Database` folder in the project root.
+
+6. **Verify installation**
+   
+   Run the following command to verify that everything is set up correctly:
+   ```bash
+   python main.py --help
+   ```
+
+   This should display the help message for the CLI, indicating that the installation was successful.
+
+### Troubleshooting
+- If you encounter any issues with package dependencies, try updating pip and setuptools:
+  ```bash
+  pip install --upgrade pip setuptools
+  ```
+  Then, run the installation command again.
+- Ensure that your Python version is 3.7 or higher. You can check your Python version with:
+  ```bash
+  python --version
+  ```
+- If you're having trouble with API keys, make sure they are correctly set in your `.env` file and that the file is in the root directory of the project.
+
+For any other issues, open an [issue](https://github.com/seanbetts/genai-marketing-benchmarks/issues) in the GitHub repository.
+
+## Running the GenAI Marketing Benchmarks
+The GenAI Marketing Benchmarks can be run in two modes: interactive and non-interactive. Both modes are accessible through the command-line interface (CLI).
+
+### Prerequisites
+Before running the benchmarks, ensure you have:
+
+1. Installed all required dependencies (see [Installation section](#installation) section).
+2. Set up your `.env` file with the necessary API keys:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   CLAUDE_API_KEY=your_claude_api_key
+   TOGETHER_API_KEY=your_together_api_key
+   ```
+
+### Interactive Mode
+To run the benchmarks in interactive mode, simply execute:
+```bash
+python main.py
+```
+
+This will guide you through a series of prompts to:
+- Select the models to test
+- Choose the categories of questions
+- Specify the number of questions and rounds
+- Confirm the estimated cost before running
+
+### Non-Interactive Mode
+For automated or scripted runs, use the non-interactive mode with command-line arguments:
+```bash
+python main.py --non-interactive [OPTIONS]
+```
+
+Available options:
+- `--num-questions`: Number of questions to test (use 'all' for all available questions)
+- `--num-rounds`: Number of rounds to run
+- `--models` or `-m`: Models to use for testing (can be specified multiple times)
+- `--categories` or `-c`: Categories to test (can be specified multiple times)
+
+Example:
+```bash
+python main.py --non-interactive --num-questions 100 --num-rounds 2 --models "GPT-4" "Claude-3 Opus" --categories "SEO" "PPC"
+```
+
+This command will:
+- Run in non-interactive mode
+- Test 100 questions
+- Perform 2 rounds of testing
+- Use the GPT-4 and Claude-3 Opus models
+- Test questions from the SEO and PPC categories
+
+### Viewing Results
+After running the benchmarks, results will be saved in the SQLite database. You can analyze these results using SQL queries or export them for further analysis.
+
+## Testing Methodology
+
+### Marketing Knowledge
 The benchmarking methodology uses the [AI Harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/e47e01beea79cfe87421e2dac49e64d499c240b4) prompt implementation. Below is an example of the prompt used to ask the multiple choice questions:
 
 *Choose the correct answer for the following marketing multiple-choice question. ANSWER ONLY with a SINGLE letter of the correct choice.<br><br>
@@ -120,10 +258,8 @@ C. Online ads<br>
 D. Print<br><br>
 Answer:*
 
-## Testing Methodology - Marketing Understanding
-
+### Marketing Understanding
 TBC
 
-## Testing Methodology - Marketing Capabilities
-
+### Marketing Capabilities
 TBC
