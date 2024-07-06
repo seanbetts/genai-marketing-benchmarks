@@ -25,7 +25,7 @@ from src.logger import setup_logger, get_logger
 @click.option('--categories', '-c', multiple=True, help='Categories to test (can be specified multiple times)')
 @click.option('--interactive/--non-interactive', default=True, help='Run in interactive mode (default) or non-interactive mode')
 
-def run_benchmark(num_questions: str, num_rounds: int, models: List[str], categories: List[str], interactive: bool):
+def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], categories: List[str], interactive: bool):
     """Run the GenAI Marketing Benchmarks."""
     try:
         setup_logger(BASE_FOLDER)
@@ -57,7 +57,7 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
         else:
             selected_models = [model for model in MODELS if model['name'] in models]
             selected_categories = list(categories)
-            num_questions = num_questions if num_questions != 'all' else len(questions_df)
+            num_questions = len(questions_df) if num_questions == 'all' else int(num_questions)
 
         if not selected_models:
             logger.error("No models selected. Exiting.")
@@ -83,17 +83,17 @@ def run_benchmark(num_questions: str, num_rounds: int, models: List[str], catego
             sys.exit(1)
 
         # Calculate estimated cost
-        questions_per_round = total_questions if num_questions == 'all' else min(int(num_questions), total_questions)
+        questions_per_round = total_questions if isinstance(num_questions, str) and num_questions == 'all' else min(int(num_questions), total_questions)
         estimated_cost, model_costs = estimate_cost(questions_per_round, num_rounds, selected_models)
         logger.info(f"Estimated total cost: ${estimated_cost:.3f}")
 
         # Confirm run
         if interactive:
             logger.info("Asking user to confirm the run")
-            if not confirm_run(estimated_cost, model_costs, num_rounds, num_questions, total_questions):
+            if not confirm_run(estimated_cost, model_costs, num_rounds, questions_per_round, total_questions):
                 logger.info("User aborted the run")
                 print("Testing run aborted by the user.")
-                return  # Use return instead of sys.exit(0)
+            return
             
         # Main testing loop
         for model_info in selected_models:

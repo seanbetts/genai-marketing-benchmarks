@@ -1,6 +1,6 @@
 import curses
 import os
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Union
 
 def clear_console() -> None:
     """Clear the console screen."""
@@ -88,7 +88,7 @@ def select_categories(categories: List[str]) -> List[str]:
     """
     return curses.wrapper(curses_menu, categories, "Select categories (press Space to toggle, Enter to confirm):", all_selected=True)
 
-def get_user_inputs() -> Tuple[str, int]:
+def get_user_inputs() -> Tuple[str | int, int]:
     """
     Get user inputs for number of questions and rounds.
     
@@ -97,7 +97,7 @@ def get_user_inputs() -> Tuple[str, int]:
     """
     clear_console()
     num_questions_input = input("Enter the number of questions to test (or type 'All' to use all questions): ")
-    num_questions = 'all' if num_questions_input.lower() == 'all' else int(num_questions_input)
+    num_questions: Union[str, int] = 'all' if num_questions_input.lower() == 'all' else int(num_questions_input)
     num_rounds = int(input("Enter the number of rounds to run: "))
     return num_questions, num_rounds
 

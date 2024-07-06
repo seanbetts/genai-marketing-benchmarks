@@ -176,6 +176,7 @@ optree==0.11.0
 packaging==23.2
 pandas==2.1.3
 pandas-datareader==0.10.0
+pandas-stubs==2.2.2.240603
 parso==0.8.3
 peewee==3.17.0
 pexpect==4.9.0
@@ -295,6 +296,8 @@ traitlets==5.13.0
 transformers==4.35.2
 twilio==8.10.2
 typer==0.12.3
+types-pytz==2024.1.0.20240417
+types-PyYAML==6.0.12.20240311
 typing-inspect==0.9.0
 typing_extensions==4.8.0
 tzdata==2023.3

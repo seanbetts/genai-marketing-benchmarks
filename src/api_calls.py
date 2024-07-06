@@ -1,10 +1,12 @@
 import os
-from typing import Tuple, Optional, Any
+from typing import Tuple, Optional, Any, cast
 from openai import OpenAI
-import anthropic
-import vertexai
-from vertexai.generative_models import GenerativeModel
-from together import Together
+from openai.types.chat import ChatCompletion
+from openai.types.completion_usage import CompletionUsage
+import anthropic # type: ignore
+import vertexai  # type: ignore
+from vertexai.generative_models import GenerativeModel  # type: ignore
+from together import Together  # type: ignore
 
 from src.logger import get_logger
 from src.constants import PROJECT_ID, LOCATION, MAX_RETRIES
@@ -34,7 +36,7 @@ def initialize_clients() -> None:
 
     vertexai.init(project=PROJECT_ID, location=LOCATION)
 
-def query_language_model(provider: str, model: str, prompt: str, retry_count: int = MAX_RETRIES) -> Tuple[str, int, int]:
+def query_language_model(provider: str, model: str, prompt: str, retry_count: int = MAX_RETRIES) -> Tuple[Optional[str], int, int]:
     """
     Query a language model with the given prompt.
     
@@ -50,26 +52,46 @@ def query_language_model(provider: str, model: str, prompt: str, retry_count: in
     initialize_clients()  # Ensure clients are initialized
 
     if retry_count == 0:
-        logger.error(f"All retries exhausted for {provider} {model}")
         return None, 0, 0
 
     try:
-        if provider == 'OpenAI':
-            response = GPT_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
-            return response.choices[0].message.content.strip(), response.usage.prompt_tokens, response.usage.completion_tokens
-        elif provider == 'Anthropic':
-            response = claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}])
-            return response.content[0].text, response.usage.input_tokens, response.usage.output_tokens
+        if provider == 'OpenAI' and GPT_client is not None:
+            response: ChatCompletion = GPT_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
+            content = response.choices[0].message.content if response.choices else None
+            usage: Optional[CompletionUsage] = response.usage
+            return (
+                content.strip() if content else None,
+                usage.prompt_tokens if usage and usage.prompt_tokens is not None else 0,
+                usage.completion_tokens if usage and usage.completion_tokens is not None else 0
+            )
+        elif provider == 'Anthropic' and claude_client is not None:
+            response: Any = claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}])
+            content = response.content[0].text if hasattr(response, 'content') and response.content else None
+            usage = response.usage if hasattr(response, 'usage') else None
+            return (
+                content,
+                getattr(usage, 'input_tokens', 0) if usage else 0,
+                getattr(usage, 'output_tokens', 0) if usage else 0
+            )
         elif provider == 'Google':
-            model_instance = GenerativeModel(model)
-            response = model_instance.generate_content(prompt)
-            return response.text, model_instance.count_tokens(prompt).total_tokens, model_instance.count_tokens(response.text).total_tokens
-        elif provider in ['Meta', 'Mistral']:
-            response = together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
-            return response.choices[0].message.content, response.usage.prompt_tokens, response.usage.completion_tokens
-        else:
-            logger.error(f"Unknown provider: {provider}")
-            return None, 0, 0
+            model_instance: Any = GenerativeModel(model)
+            response: Any = model_instance.generate_content(prompt)
+            return (
+                str(response.text) if hasattr(response, 'text') and response.text is not None else None,
+                int(model_instance.count_tokens(prompt).total_tokens) if hasattr(model_instance, 'count_tokens') else 0,
+                int(model_instance.count_tokens(str(response.text) if hasattr(response, 'text') and response.text is not None else "").total_tokens) if hasattr(model_instance, 'count_tokens') else 0
+            )
+        elif provider in ['Meta', 'Mistral'] and together_client is not None:
+            response: Any = together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
+            content = response.choices[0].message.content if hasattr(response, 'choices') and response.choices else None
+            usage = response.usage if hasattr(response, 'usage') else None
+            return (
+                content,
+                getattr(usage, 'prompt_tokens', 0) if usage else 0,
+                getattr(usage, 'completion_tokens', 0) if usage else 0
+            )
     except Exception as e:
-        logger.error(f"Error during API call to {provider} {model}: {str(e)}")
+        print(f"Error during API call: {e}")
         return query_language_model(provider, model, prompt, retry_count - 1)
+
+    return None, 0, 0
