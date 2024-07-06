@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented comprehensive unit tests for data processing functions.
 - Created a `tests` directory with `test_api_calls.py`, `test_cli.py`, `test_constants.py`, `test_data_processing.py`, and `test_user_interface.py`.
 - Added flexibility to database-related functions with optional `db_path` parameter.
+- Implemented comprehensive type checking using mypy across the project.
 
 ### Changed
 - Reorganized project structure:
@@ -46,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Streamlined the process of running the benchmark through command-line arguments.
 - Enhanced code reliability and maintainability through unit testing.
 - Increased test coverage for critical api calls, CLI, data processing, and user interface functions.
+- Improved type annotations across all modules to resolve mypy errors.
+- Updated iteration logic in cli.py to use enumerate for question numbering, ensuring type safety with DataFrame indices.
+- Refactored error handling in various functions to properly handle potential None values.
+- Increased robustness of the codebase by eliminating potential type-related runtime errors.
 
 ### Removed
 - Removed the original `test.py` file after migrating all functionality to new modular structure.

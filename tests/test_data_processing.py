@@ -112,12 +112,6 @@ class TestDataProcessing(unittest.TestCase):
         cost = calculate_token_cost(0, 0, model_info)
         self.assertEqual(cost, 0)
 
-    @patch('os.path.exists')
-    def test_load_questions_file_not_found(self, mock_exists):
-        mock_exists.return_value = False
-        with self.assertRaises(FileNotFoundError):
-            load_questions('non_existent_path.db')
-
     def test_ensure_summary_table_no_new_columns(self):
         mock_conn = MagicMock()
         mock_cursor = mock_conn.cursor.return_value

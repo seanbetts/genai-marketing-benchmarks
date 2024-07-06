@@ -56,18 +56,18 @@ def query_language_model(provider: str, model: str, prompt: str, retry_count: in
 
     try:
         if provider == 'OpenAI' and GPT_client is not None:
-            response: ChatCompletion = GPT_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
-            content = response.choices[0].message.content if response.choices else None
-            usage: Optional[CompletionUsage] = response.usage
+            response_openai: ChatCompletion = GPT_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
+            content = response_openai.choices[0].message.content if response_openai.choices else None
+            usage: Optional[CompletionUsage] = response_openai.usage
             return (
                 content.strip() if content else None,
                 usage.prompt_tokens if usage and usage.prompt_tokens is not None else 0,
                 usage.completion_tokens if usage and usage.completion_tokens is not None else 0
             )
         elif provider == 'Anthropic' and claude_client is not None:
-            response: Any = claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}])
-            content = response.content[0].text if hasattr(response, 'content') and response.content else None
-            usage = response.usage if hasattr(response, 'usage') else None
+            response_anthropic: Any = claude_client.messages.create(model=model, max_tokens=1024, messages=[{"role": "user", "content": prompt}])
+            content = response_anthropic.content[0].text if hasattr(response_anthropic, 'content') and response_anthropic.content else None
+            usage = response_anthropic.usage if hasattr(response_anthropic, 'usage') else None
             return (
                 content,
                 getattr(usage, 'input_tokens', 0) if usage else 0,
@@ -75,16 +75,16 @@ def query_language_model(provider: str, model: str, prompt: str, retry_count: in
             )
         elif provider == 'Google':
             model_instance: Any = GenerativeModel(model)
-            response: Any = model_instance.generate_content(prompt)
+            response_google: Any = model_instance.generate_content(prompt)
             return (
-                str(response.text) if hasattr(response, 'text') and response.text is not None else None,
+                str(response_google.text) if hasattr(response_google, 'text') and response_google.text is not None else None,
                 int(model_instance.count_tokens(prompt).total_tokens) if hasattr(model_instance, 'count_tokens') else 0,
-                int(model_instance.count_tokens(str(response.text) if hasattr(response, 'text') and response.text is not None else "").total_tokens) if hasattr(model_instance, 'count_tokens') else 0
+                int(model_instance.count_tokens(str(response_google.text) if hasattr(response_google, 'text') and response_google.text is not None else "").total_tokens) if hasattr(model_instance, 'count_tokens') else 0
             )
         elif provider in ['Meta', 'Mistral'] and together_client is not None:
-            response: Any = together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
-            content = response.choices[0].message.content if hasattr(response, 'choices') and response.choices else None
-            usage = response.usage if hasattr(response, 'usage') else None
+            response_together: Any = together_client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}])
+            content = response_together.choices[0].message.content if hasattr(response_together, 'choices') and response_together.choices else None
+            usage = response_together.usage if hasattr(response_together, 'usage') else None
             return (
                 content,
                 getattr(usage, 'prompt_tokens', 0) if usage else 0,

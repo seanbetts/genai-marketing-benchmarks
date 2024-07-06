@@ -19,13 +19,13 @@ from src.api_calls import query_language_model
 from src.logger import setup_logger, get_logger
 
 @click.command()
-@click.option('--num-questions', default='all', help='Number of questions to test (or "all" for all questions)')
+@click.option('--num-questions', default='all', type=str, help='Number of questions to test (or "all" for all questions)')
 @click.option('--num-rounds', default=1, type=int, help='Number of rounds to run')
 @click.option('--models', '-m', multiple=True, help='Models to use for testing (can be specified multiple times)')
 @click.option('--categories', '-c', multiple=True, help='Categories to test (can be specified multiple times)')
 @click.option('--interactive/--non-interactive', default=True, help='Run in interactive mode (default) or non-interactive mode')
 
-def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], categories: List[str], interactive: bool):
+def run_benchmark(num_questions: Union[str, int], num_rounds: int, models: List[str], categories: List[str], interactive: bool):
     """Run the GenAI Marketing Benchmarks."""
     try:
         setup_logger(BASE_FOLDER)
@@ -41,7 +41,7 @@ def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], 
                 logger.error(f"{key} is not set in the environment variables.")
             sys.exit(1)
 
-        # Get current date and time
+        # Get current date
         today_date: str = datetime.today().strftime(DATE_FORMAT)
 
         # Load questions
@@ -93,22 +93,20 @@ def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], 
             if not confirm_run(estimated_cost, model_costs, num_rounds, questions_per_round, total_questions):
                 logger.info("User aborted the run")
                 print("Testing run aborted by the user.")
-            return
+                return
             
         # Main testing loop
         for model_info in selected_models:
             logger.info(f"Starting tests for model: {model_info['name']}")
-
             # Check for existing rounds and get the highest round number
             highest_round: int = check_table_exists_and_get_highest_round(model_info['variant'], today_date)
             start_round: int = highest_round + 1
-
             for iteration in range(start_round, start_round + num_rounds):
                 logger.info(f"Starting round {iteration} for {model_info['name']}")
                 results: List[Dict[str, Any]] = []
                 questions_to_test = filtered_df if num_questions == 'all' else filtered_df.sample(n=min(int(num_questions), total_questions))
-                for index, question in questions_to_test.iterrows():
-                    logger.info(f"Processing question {index + 1}")
+                for question_number, (index, question) in enumerate(questions_to_test.iterrows(), start=1):
+                    logger.info(f"Processing question {question_number}")
                     # Prepare the prompt
                     prompt = PROMPT_TEMPLATE.format(
                         question=question['Question'],
@@ -128,7 +126,7 @@ def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], 
 
                     # Check the answer
                     logger.info(f"Raw answer from model: {answer}")
-                    cleaned_answer, is_valid = answer_check(answer)
+                    cleaned_answer, is_valid = answer_check(answer if answer is not None else "")
                     logger.info(f"Cleaned answer: {cleaned_answer}, Is valid: {is_valid}")
 
                     # If the answer is not valid, retry (you might want to limit the number of retries)
@@ -141,7 +139,7 @@ def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], 
                             prompt
                         )
                         logger.info(f"Raw answer from model (retry): {answer}")
-                        cleaned_answer, is_valid = answer_check(answer)
+                        cleaned_answer, is_valid = answer_check(answer if answer is not None else "")
                         logger.info(f"Cleaned answer (retry): {cleaned_answer}, Is valid: {is_valid}")
                         retry_count -= 1
 
@@ -154,7 +152,7 @@ def run_benchmark(num_questions: str | int, num_rounds: int, models: List[str], 
                     cost: float = calculate_token_cost(prompt_tokens, completion_tokens, model_info)
 
                     logger.info(f"Final answer: {cleaned_answer}")
-                    logger.info(f"Question {index + 1} result: Correct: {is_correct}")
+                    logger.info(f"Question {question_number} result: Correct: {is_correct}")
 
                     # Store the result
                     results.append({
