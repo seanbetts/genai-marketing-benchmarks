@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - dev branch
 
+## [0.2.0-beta] - 2024-07-06 - main branch (current release)
+
 ### Added
 - Implemented type hints across all main Python files for improved code readability and error catching.
 - Added docstrings to all functions following Google style format.
