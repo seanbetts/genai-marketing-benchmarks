@@ -3,7 +3,7 @@ version: "0.2.0-beta"
 
 # Database settings
 database:
-  name: 'results_database.sqlite'
+  name: 'benchmark_database.sqlite'
   folder: 'Database'
 
 # Vertex API settings
