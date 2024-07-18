@@ -9,8 +9,11 @@ LOGS_FOLDER = os.path.join(BASE_FOLDER, 'Logs')
 CONFIG_PATH = os.path.join(SCRIPTS_FOLDER, 'config.yaml')
 
 # Load configuration
-with open(CONFIG_PATH, 'r') as config_file:
-    CONFIG: Dict[str, Any] = yaml.safe_load(config_file)
+def load_config(config_path: str = CONFIG_PATH) -> Dict[str, Any]:
+    with open(config_path, 'r') as config_file:
+        return yaml.safe_load(config_file)
+
+CONFIG: Dict[str, Any] = load_config()
 
 # Function to evaluate cost expressions
 def evaluate_cost(expression: str) -> float:

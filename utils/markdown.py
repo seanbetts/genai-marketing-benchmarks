@@ -1,15 +1,40 @@
+import os
+import sys
+
+def add_project_root_to_path():
+    # Get the directory containing the current script (utils)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Get the parent directory of utils (which should be the project root)
+    project_root = os.path.dirname(current_dir)
+    
+    # Add the project root to sys.path if it's not already there
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+
+# Call this function at the top of your markdown.py file
+add_project_root_to_path()
+
 import sqlite3
 import pandas as pd
 from datetime import datetime
 import curses
-from utils import determine_provider, clean_model_name, clear_console
+from utils.utils import determine_provider, clean_model_name, clear_console
+from src.constants import DATABASE_PATH
 
 # Clear console
 clear_console()
 
+# Verify database
+def verify_database_path(path):
+       if not os.path.exists(path):
+           raise FileNotFoundError(f"Database file not found: {path}")
+       print(f"Database file found: {path}")
+
 # Function to initialize the database connection and fetch dates
 def get_dates():
-    conn = sqlite3.connect('../../results_database.sqlite')
+    verify_database_path(DATABASE_PATH)
+    conn = sqlite3.connect(DATABASE_PATH)
     query = "SELECT Date, COUNT(*) as record_count, AVG(TOTAL) as total_avg FROM category_summary GROUP BY Date"
     dates_df = pd.read_sql_query(query, conn)
     conn.close()
@@ -63,10 +88,11 @@ def curses_menu(dates_df):
 # Main function to generate markdown file
 def generate_markdown(selected_date):
     # Connect to SQLite database
-    conn = sqlite3.connect('../../results_database.sqlite')
+    verify_database_path(DATABASE_PATH)
+    conn = sqlite3.connect(DATABASE_PATH)
 
     # Read data from category_summary table with selected date
-    df = pd.read_sql_query(f"SELECT * FROM category_summary WHERE Date >= '{selected_date}'", conn)
+    df = pd.read_sql_query(f"SELECT * FROM category_summary WHERE Date >= {selected_date}", conn)
 
     # Close the connection
     conn.close()
