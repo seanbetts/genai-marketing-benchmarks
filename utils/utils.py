@@ -48,6 +48,9 @@ def clean_model_name(model_name, provider):
         # Capitalize Turbo correctly and replace hyphen with space
         model_name = model_name.replace('TURBO', 'Turbo')
         model_name = model_name.replace('-Turbo', ' Turbo')
+        # Capitalize Mini correctly and replace hyphen with space
+        model_name = model_name.replace('MINI', 'Mini')
+        model_name = model_name.replace('-Mini', ' Mini')
     elif provider == 'Google':
         # Remove date-like strings if any
         model_name = re.sub(r'\d{4}[-/]?\d{2}[-/]?\d{2}', '', model_name)
