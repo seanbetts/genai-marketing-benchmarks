@@ -11,7 +11,7 @@ def clear_console():
         os.system('clear')
 
 def determine_provider(model_name):
-    model_name_lower = model_name.lower()  # Convert to lower case for case insensitive comparison
+    model_name_lower = model_name.lower()
     if 'claude' in model_name_lower:
         return 'Anthropic'
     elif 'gpt' in model_name_lower:
@@ -26,6 +26,8 @@ def determine_provider(model_name):
         return 'Unknown'
 
 # Clean up Model names for each provider
+import re
+
 def clean_model_name(model_name, provider):
     if provider == 'Anthropic':
         # Remove date-like strings
@@ -65,30 +67,34 @@ def clean_model_name(model_name, provider):
         model_name = model_name.split('/')[-1]
         # Remove date-like strings and trailing segments
         model_name = re.sub(r'\d{4}[-/]?\d{2}[-/]?\d{2}', '', model_name)
-        # Add a hyphen after 'Llama'
-        model_name = re.sub(r'(Llama) (\d)', r'\1-\2', model_name)
-        # Remove everything after the 'B'
-        model_name = re.sub(r'b.*', 'B', model_name)
-        # Capitalize properly
-        model_name = model_name.title()
-        # Remove any extra hyphen or space after B
-        model_name = re.sub(r'(\d)B', r'\1B', model_name)
-        # Ensure there's no trailing hyphen or space
-        model_name = model_name.strip('- ')
-        model_name = model_name.replace('2-', '2 ')
-        model_name = model_name.replace('3-', '3 ')
+        # Try to match both Llama-3.1 and Llama-2 style names
+        match = re.search(r'Llama[-\s]*(\d+(?:\.\d+)?)[-\s]*(\d+)[bB]', model_name, re.IGNORECASE)
+        if match:
+            version, size = match.groups()
+            # Remove trailing .0 if present
+            version = version.rstrip('.0')
+            model_name = f"Llama-{version} {size}B"
+        else:
+            # If pattern not found, just clean up the name
+            model_name = re.sub(r'Meta-?', '', model_name)
+            model_name = re.sub(r'Instruct.*', '', model_name)
+            model_name = re.sub(r'chat.*', '', model_name, flags=re.IGNORECASE)
+            model_name = re.sub(r'[-\s]+', '-', model_name).strip('-')
+        # Remove -hf suffix if present
+        model_name = re.sub(r'-hf$', '', model_name, flags=re.IGNORECASE)
     elif provider == 'Mistral':
         # Remove everything before the forward slash
         model_name = model_name.split('/')[-1]
-        # Remove "Instruct" and anything after
-        model_name = re.sub(r'Instruct.*', '', model_name, flags=re.IGNORECASE)
+        # Remove "Instruct", "latest", and anything after
+        model_name = re.sub(r'(Instruct|latest).*', '', model_name, flags=re.IGNORECASE)
         # Convert "X" to lowercase
         model_name = re.sub(r'X(\d)', r'x\1', model_name)
-        # Remove trailing hyphen
-        model_name = model_name.rstrip('-')
+        # Remove hyphens and extra spaces
+        model_name = re.sub(r'[-\s]+', ' ', model_name).strip()
         # Capitalize properly
-        model_name = re.sub(r'(\b[a-z])', lambda x: x.group().upper(), model_name)
+        model_name = ' '.join(word.capitalize() for word in model_name.split())
     else:
         # Generic cleanup
         model_name = model_name.replace('-', ' ')
+    
     return model_name
