@@ -7,6 +7,8 @@ import anthropic # type: ignore
 import vertexai  # type: ignore
 from vertexai.generative_models import GenerativeModel  # type: ignore
 from together import Together  # type: ignore
+from mistralai.client import MistralClient # type: ignore
+from mistralai.models.chat_completion import ChatMessage # type: ignore
 
 from src.logger import get_logger
 from src.constants import PROJECT_ID, LOCATION, MAX_RETRIES
@@ -17,14 +19,16 @@ logger = get_logger()
 GPT_client = None
 claude_client = None
 together_client = None
+mistral_client = None
 
 def initialize_clients() -> None:
-    global GPT_client, claude_client, together_client
+    global GPT_client, claude_client, together_client, mistral_client
     openai_key = os.getenv('OPENAI_API_KEY')
     claude_key = os.getenv('CLAUDE_API_KEY')
     together_key = os.getenv('TOGETHER_API_KEY')
+    mistral_key = os.getenv('MISTRAL_API_KEY')
 
-    if not all([openai_key, claude_key, together_key]):
+    if not all([openai_key, claude_key, together_key, mistral_key]):
         raise Exception("One or more API keys are missing. Please check your environment variables.")
 
     if GPT_client is None:
@@ -33,6 +37,8 @@ def initialize_clients() -> None:
         claude_client = anthropic.Anthropic(api_key=claude_key)
     if together_client is None:
         together_client = Together(api_key=together_key)
+    if mistral_client is None:
+        mistral_client = MistralClient(api_key=mistral_key)
 
     vertexai.init(project=PROJECT_ID, location=LOCATION)
 
@@ -89,6 +95,15 @@ def query_language_model(provider: str, model: str, prompt: str, retry_count: in
                 content,
                 getattr(usage, 'prompt_tokens', 0) if usage else 0,
                 getattr(usage, 'completion_tokens', 0) if usage else 0
+            )
+        elif provider == 'MistralM':
+            response_mistral: Any = mistral_client.chat(model=model, messages=[ChatMessage(role="user", content=prompt)])
+            content = response_mistral.choices[0].message.content if response_mistral.choices else None
+            usage = response_mistral.usage if hasattr(response_mistral, 'usage') else None
+            return (
+                content,
+                getattr(usage, 'input_tokens', 0) if usage else 0,
+                getattr(usage, 'output_tokens', 0) if usage else 0
             )
     except Exception as e:
         print(f"Error during API call: {e}")
