@@ -29,73 +29,87 @@ clear_console()
 def verify_database_path(path):
        if not os.path.exists(path):
            raise FileNotFoundError(f"Database file not found: {path}")
-       print(f"Database file found: {path}")
+       # print(f"Database file found: {path}")
 
 # Function to initialize the database connection and fetch dates
-def get_dates():
+def get_models():
     verify_database_path(DATABASE_PATH)
     conn = sqlite3.connect(DATABASE_PATH)
-    query = "SELECT Date, COUNT(*) as record_count, AVG(TOTAL) as total_avg FROM category_summary GROUP BY Date"
-    dates_df = pd.read_sql_query(query, conn)
+    query = "SELECT Model, Date, TOTAL as Score FROM category_summary ORDER BY Date DESC, TOTAL DESC"
+    models_df = pd.read_sql_query(query, conn)
     conn.close()
-    return dates_df
 
-# Function to select a date using curses menu
-def curses_menu(dates_df):
+    # Apply determine_provider and clean_model_name functions
+    models_df['Provider'] = models_df['Model'].apply(determine_provider)
+    models_df['CleanModel'] = models_df.apply(lambda row: clean_model_name(row['Model'], row['Provider']), axis=1)
+
+    return models_df
+
+# Function to select models using curses menu
+def curses_model_menu(models_df):
     stdscr = curses.initscr()
     curses.cbreak()
+    curses.noecho()
     stdscr.keypad(True)
     
-    dates = dates_df['Date'].tolist()
-    selected_date = None
+    models = models_df.to_dict('records')
+    selected_models = set()
     idx = 0
     
     try:
         while True:
             stdscr.clear()
-            stdscr.addstr(0, 0, "Use the arrow keys to navigate and press Enter to select a date.")
-            stdscr.addstr(1, 0, "The markdown table will include data from the selected date onwards.\n")
-            for i, date in enumerate(dates):
-                record_count = dates_df.loc[dates_df['Date'] == date, 'record_count'].values[0]
-                total_avg = dates_df.loc[dates_df['Date'] == date, 'total_avg'].values[0]
-                display_text = f"{date} - {record_count} models included, AVERAGE SCORE: {total_avg:.1f}%"
+            stdscr.addstr(0, 0, "Use arrow keys to navigate, Space to select/deselect, and Enter to confirm all selections.")
+            stdscr.addstr(1, 0, "Press Ctrl+C to exit at any time.\n")
+            for i, model in enumerate(models):
+                display_text = f"{model['Date']} - {model['CleanModel']} - Score: {model['Score']:.1f}%"
                 if i == idx:
-                    stdscr.addstr(i + 3, 0, f"(X) {display_text}", curses.A_REVERSE)
+                    stdscr.addstr(i + 3, 0, f"{'[X]' if model['Model'] in selected_models else '[ ]'} {display_text}", curses.A_REVERSE)
                 else:
-                    stdscr.addstr(i + 3, 0, f"( ) {display_text}")
-            stdscr.addstr(len(dates) + 3, 0, "( ) Exit")
-            if idx == len(dates):
-                stdscr.addstr(len(dates) + 3, 0, "(X) Exit", curses.A_REVERSE)
+                    stdscr.addstr(i + 3, 0, f"{'[X]' if model['Model'] in selected_models else '[ ]'} {display_text}")
             stdscr.refresh()
             
             key = stdscr.getch()
             
             if key == curses.KEY_UP and idx > 0:
                 idx -= 1
-            elif key == curses.KEY_DOWN and idx < len(dates):
+            elif key == curses.KEY_DOWN and idx < len(models) - 1:
                 idx += 1
-            elif key == curses.KEY_ENTER or key in [10, 13]:
-                if idx == len(dates):
-                    selected_date = None
+            elif key == ord(' '):
+                model = models[idx]['Model']
+                if model in selected_models:
+                    selected_models.remove(model)
                 else:
-                    selected_date = dates[idx]
-                break
+                    selected_models.add(model)
+            elif key in [curses.KEY_ENTER, 10, 13]:  # Enter key
+                if len(selected_models) > 0:
+                    return list(selected_models)
+                else:
+                    stdscr.addstr(len(models) + 3, 0, "Please select at least one model before confirming.", curses.A_BOLD)
+                    stdscr.refresh()
+                    stdscr.getch()  # Wait for any key press
+    except KeyboardInterrupt:
+        return None
     finally:
         curses.endwin()
-    
-    return selected_date
 
 # Main function to generate markdown file
-def generate_markdown(selected_date):
+def generate_markdown(selected_models):
     # Connect to SQLite database
     verify_database_path(DATABASE_PATH)
     conn = sqlite3.connect(DATABASE_PATH)
 
-    # Read data from category_summary table with selected date
-    df = pd.read_sql_query(f"SELECT * FROM category_summary WHERE Date >= {selected_date}", conn)
+    # Read data from category_summary table with selected models
+    placeholders = ', '.join(['?' for _ in selected_models])
+    query = f"SELECT * FROM category_summary WHERE Model IN ({placeholders})"
+    df = pd.read_sql_query(query, conn, params=selected_models)
 
     # Close the connection
     conn.close()
+
+    # Apply determine_provider and clean_model_name functions
+    df['Provider'] = df['Model'].apply(determine_provider)
+    df['CleanModel'] = df.apply(lambda row: clean_model_name(row['Model'], row['Provider']), axis=1)
 
     # Rename columns as needed
     column_renames = {
@@ -157,10 +171,22 @@ def generate_markdown(selected_date):
     print("Markdown file created successfully")
 
 # Main script execution
+def main():
+    try:
+        models_df = get_models()
+        selected_models = curses_model_menu(models_df)
+        
+        # Cleanup curses
+        curses.endwin()
+        
+        if selected_models:
+            generate_markdown(selected_models)
+        else:
+            print("\nNo models selected or operation cancelled. Exiting...")
+    except KeyboardInterrupt:
+        print("\nOperation cancelled by user. Exiting...")
+    except Exception as e:
+        print(f"\nAn error occurred: {str(e)}")
+
 if __name__ == "__main__":
-    dates = get_dates()
-    selected_date = curses_menu(dates)
-    if selected_date:
-        generate_markdown(selected_date)
-    else:
-        print("No date selected. Exiting...")
+    main()
