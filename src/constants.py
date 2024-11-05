@@ -31,6 +31,7 @@ DATABASE_PATH = os.path.join(BASE_FOLDER, DATABASE_FOLDER, DATABASE_NAME)
 # Vertex API settings
 PROJECT_ID = CONFIG['api']['project_id']
 LOCATION = CONFIG['api']['location']
+SERVICE_ACCOUNT_FILE = os.path.join(SCRIPTS_FOLDER, 'key.json')
 
 # Model definitions with calculated costs
 MODELS = []
@@ -48,4 +49,7 @@ TIME_FORMAT = '%H-%M'
 
 # Other constants
 MAX_RETRIES = CONFIG['max_retries']
+INITIAL_DELAY = CONFIG['initial_delay']
+MAX_DELAY = CONFIG['max_delay']
+BACKOFF_MULTIPLIER = CONFIG['backoff_multiplier']
 VALID_ANSWERS = CONFIG['valid_answers']
